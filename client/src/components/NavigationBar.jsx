@@ -1,5 +1,6 @@
 import React from "react";
-import logoImg from "../images/logo.png";
+import logoImg from "../images/logo.svg";
+import { Link } from "react-router-dom";
 
 import {
   Navbar,
@@ -125,7 +126,7 @@ function NavListMenu() {
         <MenuHandler>
           <Typography as="div" variant="small" className="font-medium">
             <ListItem
-              className="flex items-center gap-2 py-2 pr-4 font-medium text-gray-900"
+              className="flex items-center gap-2 py-2 pr-4 font-medium text-white"
               selected={isMenuOpen || isMobileMenuOpen}
               onClick={() => setIsMobileMenuOpen((cur) => !cur)}
             >
@@ -165,17 +166,21 @@ function NavList() {
         as="a"
         href="#"
         variant="small"
-        color="blue-gray"
+        color="white"
         className="font-medium"
       >
-        <ListItem className="flex items-center gap-2 py-2 pr-4">Home</ListItem>
+        <Link to="/">
+          <ListItem className="flex items-center gap-2 py-2 pr-4">
+            Home
+          </ListItem>
+        </Link>
       </Typography>
       <NavListMenu />
       <Typography
         as="a"
         href="#"
         variant="small"
-        color="blue-gray"
+        color="white"
         className="font-medium"
       >
         <ListItem className="flex items-center gap-2 py-2 pr-4">
@@ -197,7 +202,10 @@ export function NavigationBar() {
   }, []);
 
   return (
-    <Navbar className="mx-auto max-w-screen px-4 py-2 mb-5">
+    <div
+      className="mx-auto max-w-screen px-4 py-2 mb-5"
+      style={{ backgroundColor: "#4f493f" }}
+    >
       <div className="flex items-center justify-between text-blue-gray-900">
         <img
           src={logoImg}
@@ -208,10 +216,10 @@ export function NavigationBar() {
           <NavList />
         </div>
         <div className="hidden gap-2 lg:flex">
-          <Button variant="text" size="sm" color="blue-gray">
+          <Button variant="text" size="sm" color="white">
             Log In
           </Button>
-          <Button variant="gradient" size="sm">
+          <Button variant="gradient" size="sm" color="white">
             Sign In
           </Button>
         </div>
@@ -234,11 +242,14 @@ export function NavigationBar() {
           <Button variant="outlined" size="sm" color="blue-gray" fullWidth>
             Log In
           </Button>
-          <Button variant="gradient" size="sm" fullWidth>
+          <Button
+            size="sm"
+            style={{ backgroundColor: "white", color: "black" }}
+          >
             Sign In
           </Button>
         </div>
       </Collapse>
-    </Navbar>
+    </div>
   );
 }
