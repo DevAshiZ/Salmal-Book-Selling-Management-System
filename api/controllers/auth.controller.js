@@ -1,7 +1,8 @@
 import User from "../models/users.model.js";
 import bcryptjs from "bcryptjs";
+import { errorHandler } from "../utils/error.js";
 
-export const signup = async (req, res) => {
+export const signup = async (req, res, next) => {
   const { username, email, password } = req.body;
 
   const hashPassword = bcryptjs.hashSync(password, 10);
@@ -11,6 +12,7 @@ export const signup = async (req, res) => {
     await newUser.save();
     res.status(201).json({ message: "User created successfully!" });
   } catch (error) {
-    res.status(500).json(error.message);
+    next(error);
+    //next(errorHandler(300,"Something went wrong")) //this way we can pass the customed error
   }
 };
