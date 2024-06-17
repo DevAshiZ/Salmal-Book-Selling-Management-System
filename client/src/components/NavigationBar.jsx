@@ -3,7 +3,6 @@ import logoImg from "../images/logo.svg";
 import { Link } from "react-router-dom";
 
 import {
-  Navbar,
   Collapse,
   Typography,
   Button,
@@ -14,6 +13,13 @@ import {
   MenuHandler,
   MenuList,
   MenuItem,
+  Dialog,
+  Card,
+  CardHeader,
+  CardBody,
+  CardFooter,
+  Input,
+  Checkbox,
 } from "@material-tailwind/react";
 import {
   ChevronDownIcon,
@@ -193,6 +199,22 @@ function NavList() {
 
 export function NavigationBar() {
   const [openNav, setOpenNav] = React.useState(false);
+  const [openLogin, setOpenLogIn] = React.useState(false);
+  const [openSignUp, setOpenSignUp] = React.useState(false);
+
+  //functions to handle signin and signup buttons
+  const handleOpenLogIn = () => {
+    setOpenLogIn((cur) => !cur);
+    if (openSignUp == true) {
+      setOpenSignUp(false);
+    }
+  };
+  const handleOpenSignUp = () => {
+    setOpenSignUp((cur) => !cur);
+    if (openLogin == true) {
+      setOpenLogIn(false);
+    }
+  };
 
   React.useEffect(() => {
     window.addEventListener(
@@ -204,7 +226,7 @@ export function NavigationBar() {
   return (
     <div
       className="mx-auto max-w-screen px-4 py-2 mb-5"
-      style={{ backgroundColor: "#4f493f" }}
+      style={{ backgroundColor: "#191919" }}
     >
       <div className="flex items-center justify-between text-blue-gray-900">
         <img
@@ -216,11 +238,21 @@ export function NavigationBar() {
           <NavList />
         </div>
         <div className="hidden gap-2 lg:flex">
-          <Button variant="text" size="sm" color="white">
+          <Button
+            variant="text"
+            size="sm"
+            color="white"
+            onClick={handleOpenLogIn}
+          >
             Log In
           </Button>
-          <Button variant="gradient" size="sm" color="white">
-            Sign In
+          <Button
+            variant="gradient"
+            size="sm"
+            color="white"
+            onClick={handleOpenSignUp}
+          >
+            Sign Up
           </Button>
         </div>
         <IconButton
@@ -239,17 +271,135 @@ export function NavigationBar() {
       <Collapse open={openNav}>
         <NavList />
         <div className="flex w-full flex-nowrap items-center gap-2 lg:hidden">
-          <Button variant="outlined" size="sm" color="blue-gray" fullWidth>
+          <Button
+            variant="outlined"
+            size="sm"
+            color="blue-gray"
+            fullWidth
+            onClick={handleOpenLogIn}
+          >
             Log In
           </Button>
+
           <Button
             size="sm"
             style={{ backgroundColor: "white", color: "black" }}
+            onClick={handleOpenSignUp}
           >
             Sign In
           </Button>
         </div>
       </Collapse>
+      {/* To handle Login Button */}
+      <Dialog
+        size="xs"
+        open={openLogin}
+        handler={handleOpenLogIn}
+        className="bg-transparent shadow-none"
+      >
+        <Card className="mx-auto w-full max-w-[24rem]">
+          <CardBody className="flex flex-col gap-4">
+            <Typography variant="h4" color="blue-gray">
+              Sign In
+            </Typography>
+            <Typography
+              className="mb-3 font-normal"
+              variant="paragraph"
+              color="gray"
+            >
+              Enter your email and password to Sign In.
+            </Typography>
+            <Typography className="-mb-2" variant="h6">
+              Your Email
+            </Typography>
+            <Input label="Email" size="lg" />
+            <Typography className="-mb-2" variant="h6">
+              Your Password
+            </Typography>
+            <Input label="Password" size="lg" />
+            <div className="-ml-2.5 -mt-3">
+              <Checkbox label="Remember Me" />
+            </div>
+          </CardBody>
+          <CardFooter className="pt-0">
+            <Button variant="gradient" onClick={handleOpenLogIn} fullWidth>
+              Sign In
+            </Button>
+            <Typography variant="small" className="mt-4 flex justify-center">
+              Don&apos;t have an account?
+              <Typography
+                as="a"
+                href="#signup"
+                variant="small"
+                color="blue-gray"
+                className="ml-1 font-bold"
+                onClick={handleOpenSignUp}
+              >
+                Sign up
+              </Typography>
+            </Typography>
+          </CardFooter>
+        </Card>
+      </Dialog>
+      {/* To handle SignUp Button */}
+      <Dialog
+        size="xs"
+        open={openSignUp}
+        handler={handleOpenSignUp}
+        className="bg-transparent shadow-none"
+      >
+        <Card className="mx-auto w-full">
+          <CardBody className="flex flex-col gap-4">
+            <Typography variant="h4" color="blue-gray">
+              Sign Up
+            </Typography>
+            <Typography
+              className="mb-3 font-normal"
+              variant="paragraph"
+              color="gray"
+            >
+              Enter your details to register with us!
+            </Typography>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <Typography className="mb-2" variant="h6">
+                  Your Name
+                </Typography>
+                <Input label="Name" size="sm" />
+              </div>
+              <div>
+                <Typography className="mb-2" variant="h6">
+                  User Name
+                </Typography>
+                <Input label="User Name" size="sm" />
+              </div>
+              <div>
+                <Typography className="mb-2" variant="h6">
+                  Your Email
+                </Typography>
+                <Input type="email" label="Email" size="sm" />
+              </div>
+              <div>
+                <Typography className="mb-2" variant="h6">
+                  Enter Password
+                </Typography>
+                <Input type="password" label="Password" size="sm" />
+              </div>
+              <div className="col-span-1 sm:col-span-2">
+                <Typography className="mb-2" variant="h6">
+                  Re-Enter Password
+                </Typography>
+                <Input type="password" label="Password" size="sm" />
+              </div>
+            </div>
+          </CardBody>
+          <CardFooter className="pt-0">
+            <Button variant="gradient" onClick={handleOpenSignUp} fullWidth>
+              Sign Up
+            </Button>
+          </CardFooter>
+        </Card>
+      </Dialog>
     </div>
   );
 }
