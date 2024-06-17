@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useState } from "react";
 import logoImg from "../images/logo.svg";
 import { Link } from "react-router-dom";
+import axios from "axios";
 
 import {
   Collapse,
@@ -19,6 +20,7 @@ import {
   CardBody,
   CardFooter,
   Input,
+  Alert,
   Checkbox,
 } from "@material-tailwind/react";
 import {
@@ -196,11 +198,34 @@ function NavList() {
     </List>
   );
 }
+//Icon for the error message
+function Icon() {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke-width="1.5"
+      stroke="currentColor"
+      class="size-6"
+    >
+      <path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z"
+      />
+    </svg>
+  );
+}
 
 export function NavigationBar() {
   const [openNav, setOpenNav] = React.useState(false);
   const [openLogin, setOpenLogIn] = React.useState(false);
   const [openSignUp, setOpenSignUp] = React.useState(false);
+  const [error, setError] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  const [signUpFormData, setSignUpFormData] = useState({});
 
   //functions to handle signin and signup buttons
   const handleOpenLogIn = () => {
@@ -215,6 +240,39 @@ export function NavigationBar() {
       setOpenLogIn(false);
     }
   };
+
+  const handleChangeSignUp = (e) => {
+    setSignUpFormData({ ...signUpFormData, [e.target.id]: e.target.value });
+  };
+
+  const handleSignUpSubmit = async (e) => {
+    e.preventDefault(); // to prevent website refreshing when data is submitting
+    try {
+      setLoading(true);
+      const res = await axios.post("/api/auth/signup", signUpFormData, {
+        headers: { "Content-Type": "application/json" },
+      });
+      console.log(res.data);
+      setLoading(false);
+      setError(false);
+    } catch (error) {
+      setLoading(false);
+      setError(true);
+      console.error(error);
+    }
+  };
+
+  // //THIS METHOD IS FETCH METHOD TO HANDLE REQUESTS
+  // const handleSignUpSubmit = async (e) => {
+  //   e.preventDefault(); //to prevent website refreshing when data is submitting
+  //   const res = await fetch("/api/auth/signup", {
+  //     method: "POST",
+  //     headers: { "Content-Type": "application/json" },
+  //     body: JSON.stringify(signUpFormData),
+  //   });
+  //   const data = await res.json();
+  //   console.log(data);
+  // };
 
   React.useEffect(() => {
     window.addEventListener(
@@ -349,55 +407,100 @@ export function NavigationBar() {
         className="bg-transparent shadow-none"
       >
         <Card className="mx-auto w-full">
-          <CardBody className="flex flex-col gap-4">
-            <Typography variant="h4" color="blue-gray">
-              Sign Up
-            </Typography>
-            <Typography
-              className="mb-3 font-normal"
-              variant="paragraph"
-              color="gray"
-            >
-              Enter your details to register with us!
-            </Typography>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <Typography className="mb-2" variant="h6">
-                  Your Name
-                </Typography>
-                <Input label="Name" size="sm" />
+          <form onSubmit={handleSignUpSubmit}>
+            <CardBody className="flex flex-col gap-4">
+              <Typography variant="h4" color="blue-gray">
+                Sign Up
+              </Typography>
+              <Typography
+                className="mb-3 font-normal"
+                variant="paragraph"
+                color="gray"
+              >
+                Enter your details to register with us!
+              </Typography>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <Typography className="mb-2" variant="h6">
+                    Your Name
+                  </Typography>
+                  <Input
+                    label="Name"
+                    id="name"
+                    size="sm"
+                    onChange={handleChangeSignUp}
+                  />
+                </div>
+                <div>
+                  <Typography className="mb-2" variant="h6">
+                    User Name
+                  </Typography>
+                  <Input
+                    label="User Name"
+                    size="sm"
+                    id="username"
+                    onChange={handleChangeSignUp}
+                  />
+                </div>
+                <div>
+                  <Typography className="mb-2" variant="h6">
+                    Your Email
+                  </Typography>
+                  <Input
+                    type="email"
+                    label="Email"
+                    size="sm"
+                    id="email"
+                    onChange={handleChangeSignUp}
+                  />
+                </div>
+                <div>
+                  <Typography className="mb-2" variant="h6">
+                    Enter Password
+                  </Typography>
+                  <Input
+                    type="password"
+                    label="Password"
+                    size="sm"
+                    id="password"
+                    onChange={handleChangeSignUp}
+                  />
+                </div>
+                <div className="col-span-1 sm:col-span-2">
+                  <Typography className="mb-2" variant="h6">
+                    Re-Enter Password
+                  </Typography>
+                  <Input
+                    type="password"
+                    label="Password"
+                    size="sm"
+                    id="repassword"
+                    onChange={handleChangeSignUp}
+                  />
+                </div>
               </div>
-              <div>
-                <Typography className="mb-2" variant="h6">
-                  User Name
-                </Typography>
-                <Input label="User Name" size="sm" />
-              </div>
-              <div>
-                <Typography className="mb-2" variant="h6">
-                  Your Email
-                </Typography>
-                <Input type="email" label="Email" size="sm" />
-              </div>
-              <div>
-                <Typography className="mb-2" variant="h6">
-                  Enter Password
-                </Typography>
-                <Input type="password" label="Password" size="sm" />
-              </div>
-              <div className="col-span-1 sm:col-span-2">
-                <Typography className="mb-2" variant="h6">
-                  Re-Enter Password
-                </Typography>
-                <Input type="password" label="Password" size="sm" />
-              </div>
-            </div>
-          </CardBody>
-          <CardFooter className="pt-0">
-            <Button variant="gradient" onClick={handleOpenSignUp} fullWidth>
-              Sign Up
-            </Button>
-          </CardFooter>
+            </CardBody>
+            <CardFooter className="pt-0">
+              <Button
+                variant="gradient"
+                type="submit"
+                fullWidth
+                disabled={loading}
+                className="uppercase"
+              >
+                {loading ? "Loading " : "Sign Up"}
+              </Button>
+              {error && (
+                <Alert
+                  icon={<Icon />}
+                  className="rounded-none border-l-4 border-[#c9402e] bg-[#c9402e]/10 font-medium text-[#c9402e] mt-2"
+                >
+                  User Registeration Error. Retry.
+                </Alert>
+              )}
+            </CardFooter>
+          </form>
         </Card>
       </Dialog>
     </div>
