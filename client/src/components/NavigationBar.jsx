@@ -357,7 +357,7 @@ export function NavigationBar() {
 
   return (
     <div
-      className="mx-auto max-w-screen px-4 py-2 mb-5"
+      className="mx-auto max-w-screen px-4 py-2 "
       style={{ backgroundColor: "#191919" }}
     >
       <div className="flex items-center justify-between text-blue-gray-900">
