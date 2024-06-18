@@ -1,12 +1,9 @@
 import React from "react";
-import { Slider } from "../components/Slider";
 
 export default function Home() {
   return (
     <div>
-      <div className="">
-        <Slider />
-      </div>
+      <div className="">Home</div>
     </div>
   );
 }
