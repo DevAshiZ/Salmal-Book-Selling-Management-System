@@ -1,7 +1,14 @@
 import React, { useState } from "react";
 import logoImg from "../images/logo.svg";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
+import {
+  signInStart,
+  signInSuccess,
+  signInFailure,
+  setErrorFalse,
+} from "../redux/user/userSlice";
+import { useDispatch, useSelector } from "react-redux";
 
 import {
   Collapse,
@@ -222,10 +229,16 @@ export function NavigationBar() {
   const [openNav, setOpenNav] = React.useState(false);
   const [openLogin, setOpenLogIn] = React.useState(false);
   const [openSignUp, setOpenSignUp] = React.useState(false);
-  const [error, setError] = useState(false);
-  const [loading, setLoading] = useState(false);
+
+  const { loading, error } = useSelector((state) => state.user); //this error and loading is from signUp
+  const [SignUpError, setSignUpError] = useState(false);
+  const [SignUpLoading, setSignUpLoading] = useState(false);
+
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const [signUpFormData, setSignUpFormData] = useState({});
+  const [signInFormData, setSignInFormData] = useState({});
 
   //functions to handle signin and signup buttons
   const handleOpenLogIn = () => {
@@ -241,24 +254,62 @@ export function NavigationBar() {
     }
   };
 
+  //functions that handles on change in forms
   const handleChangeSignUp = (e) => {
     setSignUpFormData({ ...signUpFormData, [e.target.id]: e.target.value });
   };
 
+  const handleChangeSignIn = (e) => {
+    setSignInFormData({ ...signInFormData, [e.target.id]: e.target.value });
+  };
+
+  //functions that handles login and signup forms
   const handleSignUpSubmit = async (e) => {
     e.preventDefault(); // to prevent website refreshing when data is submitting
     try {
-      setLoading(true);
+      setSignUpLoading(true);
       const res = await axios.post("/api/auth/signup", signUpFormData, {
         headers: { "Content-Type": "application/json" },
       });
       console.log(res.data);
-      setLoading(false);
-      setError(false);
+      if (openSignUp == true) {
+        setOpenSignUp(false);
+        setOpenLogIn(true);
+      }
+      setSignUpLoading(false);
+      setSignUpError(false);
+    } catch (SignUpError) {
+      setSignUpLoading(false);
+      setSignUpError(true);
+      console.error(SignUpError);
+    }
+  };
+
+  const handleLoginSubmit = async (e) => {
+    e.preventDefault(); // to prevent website refreshing when data is submitting
+    try {
+      // setLoading(true);
+      dispatch(signInStart());
+      const res = await axios.post("/api/auth/signin", signInFormData, {
+        headers: { "Content-Type": "application/json" },
+      });
+      const data = res.data;
+      console.log(data);
+
+      if (data.success === false) {
+        dispatch(signInFailure(data.message));
+      } else {
+        dispatch(signInSuccess(data));
+        navigate("/");
+        if (openLogin == true) {
+          setOpenLogIn(false);
+        }
+      }
     } catch (error) {
-      setLoading(false);
-      setError(true);
       console.error(error);
+      dispatch(
+        signInFailure(error.response?.data?.message || "An error occurred")
+      );
     }
   };
 
@@ -279,7 +330,27 @@ export function NavigationBar() {
       "resize",
       () => window.innerWidth >= 960 && setOpenNav(false)
     );
-  }, []);
+
+    if (error) {
+      // Dispatch the action to reset the error state after a brief delay
+      const timer = setTimeout(() => {
+        dispatch(setErrorFalse());
+      }, 3000); // Adjust the delay as needed
+
+      // Clean up the timer on component unmount
+      return () => clearTimeout(timer);
+    }
+
+    if (SignUpError) {
+      // Dispatch the action to reset the error state after a brief delay
+      const timer = setTimeout(() => {
+        setSignUpError(false);
+      }, 3000); // Adjust the delay as needed
+
+      // Clean up the timer on component unmount
+      return () => clearTimeout(timer);
+    }
+  }, [SignUpError, error, dispatch]);
 
   return (
     <div
@@ -356,49 +427,77 @@ export function NavigationBar() {
         className="bg-transparent shadow-none"
       >
         <Card className="mx-auto w-full max-w-[24rem]">
-          <CardBody className="flex flex-col gap-4">
-            <Typography variant="h4" color="blue-gray">
-              Sign In
-            </Typography>
-            <Typography
-              className="mb-3 font-normal"
-              variant="paragraph"
-              color="gray"
-            >
-              Enter your email and password to Sign In.
-            </Typography>
-            <Typography className="-mb-2" variant="h6">
-              Your Email
-            </Typography>
-            <Input label="Email" size="lg" />
-            <Typography className="-mb-2" variant="h6">
-              Your Password
-            </Typography>
-            <Input label="Password" size="lg" />
-            <div className="-ml-2.5 -mt-3">
-              <Checkbox label="Remember Me" />
-            </div>
-          </CardBody>
-          <CardFooter className="pt-0">
-            <Button variant="gradient" onClick={handleOpenLogIn} fullWidth>
-              Sign In
-            </Button>
-            <Typography variant="small" className="mt-4 flex justify-center">
-              Don&apos;t have an account?
-              <Typography
-                as="a"
-                href="#signup"
-                variant="small"
-                color="blue-gray"
-                className="ml-1 font-bold"
-                onClick={handleOpenSignUp}
-              >
-                Sign up
+          <form onSubmit={handleLoginSubmit}>
+            <CardBody className="flex flex-col gap-4">
+              <Typography variant="h4" color="blue-gray">
+                Sign In
               </Typography>
-            </Typography>
-          </CardFooter>
+              <Typography
+                className="mb-3 font-normal"
+                variant="paragraph"
+                color="gray"
+              >
+                Enter your email and password to Sign In.
+              </Typography>
+              <Typography className="-mb-2" variant="h6">
+                Your Email
+              </Typography>
+              <Input
+                id="email"
+                label="email"
+                type="email"
+                onChange={handleChangeSignIn}
+                size="lg"
+              />
+              <Typography className="-mb-2" variant="h6">
+                Your Password
+              </Typography>
+              <Input
+                id="password"
+                label="password"
+                type="password"
+                onChange={handleChangeSignIn}
+                size="lg"
+              />
+              <div className="-ml-2.5 -mt-3">
+                <Checkbox label="Remember Me" />
+              </div>
+              {error && (
+                <Alert
+                  icon={<Icon />}
+                  className="rounded-none border-l-4 border-[#c9402e] bg-[#c9402e]/10 font-medium text-[#c9402e] mt-2"
+                >
+                  {error || "Error Login with the System. Retry"}
+                </Alert>
+              )}
+            </CardBody>
+            <CardFooter className="pt-0">
+              <Button
+                disabled={loading}
+                className="uppercase"
+                variant="gradient"
+                type="submit"
+                fullWidth
+              >
+                {loading ? "Login In..." : "Sign In"}
+              </Button>
+              <Typography variant="small" className="mt-4 flex justify-center">
+                Don&apos;t have an account?
+                <Typography
+                  as="a"
+                  onClick={handleOpenSignUp}
+                  variant="small"
+                  color="blue-gray"
+                  className="ml-1 font-bold"
+                >
+                  Sign up
+                </Typography>
+              </Typography>
+            </CardFooter>
+          </form>
         </Card>
       </Dialog>
+
       {/* To handle SignUp Button */}
       <Dialog
         size="xs"
@@ -486,12 +585,12 @@ export function NavigationBar() {
                 variant="gradient"
                 type="submit"
                 fullWidth
-                disabled={loading}
+                disabled={SignUpLoading}
                 className="uppercase"
               >
-                {loading ? "Loading " : "Sign Up"}
+                {SignUpLoading ? "Loading " : "Sign Up"}
               </Button>
-              {error && (
+              {SignUpError && (
                 <Alert
                   icon={<Icon />}
                   className="rounded-none border-l-4 border-[#c9402e] bg-[#c9402e]/10 font-medium text-[#c9402e] mt-2"
