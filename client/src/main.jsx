@@ -3,15 +3,18 @@ import ReactDOM from "react-dom/client";
 import App from "./App.jsx";
 import "./index.css";
 import { ThemeProvider } from "@material-tailwind/react";
-import { store } from "./redux/store.js";
+import { persistor, store } from "./redux/store.js";
 import { Provider } from "react-redux";
+import { PersistGate } from "redux-persist/integration/react";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <Provider store={store}>
-      <ThemeProvider>
-        <App />
-      </ThemeProvider>
+      <PersistGate persistor={persistor} loading={null}>
+        <ThemeProvider>
+          <App />
+        </ThemeProvider>
+      </PersistGate>
     </Provider>
   </React.StrictMode>
 );
