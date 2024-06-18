@@ -28,6 +28,7 @@ import {
   CardFooter,
   Input,
   Alert,
+  Avatar,
   Checkbox,
 } from "@material-tailwind/react";
 import {
@@ -237,6 +238,7 @@ export function NavigationBar() {
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const { currentUser } = useSelector((state) => state.user);
 
   const [signUpFormData, setSignUpFormData] = useState({});
   const [signInFormData, setSignInFormData] = useState({});
@@ -367,24 +369,35 @@ export function NavigationBar() {
         <div className="hidden lg:block">
           <NavList />
         </div>
-        <div className="hidden gap-2 lg:flex">
-          <Button
-            variant="text"
-            size="sm"
-            color="white"
-            onClick={handleOpenLogIn}
-          >
-            Log In
-          </Button>
-          <Button
-            variant="gradient"
-            size="sm"
-            color="white"
-            onClick={handleOpenSignUp}
-          >
-            Sign Up
-          </Button>
-        </div>
+        {currentUser ? (
+          <Link to="/profile">
+            <Avatar
+              src={currentUser.profilePicture}
+              alt="profile"
+              className="mr-5"
+            />
+          </Link>
+        ) : (
+          <div className="hidden gap-2 lg:flex">
+            <Button
+              variant="text"
+              size="sm"
+              color="white"
+              onClick={handleOpenLogIn}
+            >
+              Log In
+            </Button>
+            <Button
+              variant="gradient"
+              size="sm"
+              color="white"
+              onClick={handleOpenSignUp}
+            >
+              Sign Up
+            </Button>
+          </div>
+        )}
+
         <IconButton
           variant="text"
           color="blue-gray"
