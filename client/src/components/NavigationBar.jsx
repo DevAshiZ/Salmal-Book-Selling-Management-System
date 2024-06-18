@@ -46,6 +46,7 @@ import {
   TagIcon,
   UserGroupIcon,
 } from "@heroicons/react/24/solid";
+import OAuth from "./OAuth";
 
 const navListMenuItems = [
   {
@@ -481,6 +482,7 @@ export function NavigationBar() {
               >
                 {loading ? "Login In..." : "Sign In"}
               </Button>
+              <OAuth />
               <Typography variant="small" className="mt-4 flex justify-center">
                 Don&apos;t have an account?
                 <Typography
@@ -590,6 +592,7 @@ export function NavigationBar() {
               >
                 {SignUpLoading ? "Loading " : "Sign Up"}
               </Button>
+              <OAuth />
               {SignUpError && (
                 <Alert
                   icon={<Icon />}

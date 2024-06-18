@@ -2,7 +2,6 @@ import User from "../models/users.model.js";
 import bcryptjs from "bcryptjs";
 import { errorHandler } from "../utils/error.js";
 import jwt from "jsonwebtoken";
-import { cannotHaveAUsernamePasswordPort } from "whatwg-url";
 
 export const signup = async (req, res, next) => {
   const { username, email, password } = req.body;
@@ -44,6 +43,26 @@ export const signin = async (req, res, next) => {
       .cookie("access_token", token, { httpOnly: true, expires: expiryDate })
       .status(200)
       .json(rest);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const google = async (req, res, next) => {
+  try {
+    const user = await User.findOne({ email: req.body.email });
+    if (user) {
+      //if the user is in the database
+      const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET);
+      const { password: hashPassword, ...rest } = user._doc;
+      const expiryDate = new Date(Date.now() + 3600000); //1hr
+      res.cookie("access_token", token, {
+        httpOnly: true,
+        expires: expiryDate,
+      });
+    } else {
+      //if the user is not in the database
+    }
   } catch (error) {
     next(error);
   }
