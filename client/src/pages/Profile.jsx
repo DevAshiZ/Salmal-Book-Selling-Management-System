@@ -32,6 +32,7 @@ import {
   deleteUserStart,
   deleteUserFailure,
   deleteUserSuccess,
+  signOut,
 } from "../redux/user/userSlice";
 
 function SuccessIcon() {
@@ -174,6 +175,15 @@ export default function Profile() {
       dispatch(deleteUserFailure(error));
     }
   };
+
+  const handleSignOut = async () => {
+    try {
+      await fetch("/api/auth/signout");
+      dispatch(signOut());
+    } catch (error) {
+      console.log(error);
+    }
+  };
   //function to handle delete confirmation
   const handleOpenDelete = () => setOpenDelete(!openDelete);
 
@@ -230,7 +240,9 @@ export default function Profile() {
             <Button color="red" onClick={handleOpenDelete}>
               Delete Account
             </Button>
-            <Button color="green">Sign Out</Button>
+            <Button onClick={handleSignOut} color="green">
+              Sign Out
+            </Button>
 
             <Dialog
               size="xs"
