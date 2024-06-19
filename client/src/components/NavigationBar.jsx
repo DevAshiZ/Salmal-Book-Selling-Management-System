@@ -300,7 +300,7 @@ export function NavigationBar() {
       console.log(data);
 
       if (data.success === false) {
-        dispatch(signInFailure(data.message));
+        dispatch(signInFailure(data));
       } else {
         dispatch(signInSuccess(data));
         navigate("/");

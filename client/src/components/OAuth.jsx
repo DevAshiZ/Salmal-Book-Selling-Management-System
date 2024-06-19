@@ -5,9 +5,11 @@ import { app } from "../firebase";
 import axios from "axios";
 import { useDispatch } from "react-redux";
 import { signInSuccess } from "../redux/user/userSlice";
+import { useNavigate } from "react-router-dom";
 
 export default function OAuth() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const handleGoogleClick = async () => {
     try {
@@ -28,6 +30,7 @@ export default function OAuth() {
 
       const data = res.data;
       dispatch(signInSuccess(data));
+      navigate("/");
 
       console.log("User logged in and data sent to server", res.data);
     } catch (error) {
