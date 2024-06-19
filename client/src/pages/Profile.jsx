@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { SideBar } from "../components/SideBar";
+import { useRef } from "react";
 import {
   Card,
   Dialog,
@@ -11,11 +12,52 @@ import {
   Button,
 } from "@material-tailwind/react";
 import { useSelector } from "react-redux";
+import {
+  getDownloadURL,
+  getStorage,
+  ref,
+  uploadBytesResumable,
+} from "firebase/storage";
+import { app } from "../firebase";
 
 export default function Profile() {
   const { currentUser } = useSelector((state) => state.user);
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen((cur) => !cur);
+  const fileRef = useRef(null);
+  const [image, setImage] = useState(undefined);
+  const [imagePercent, setImagePercent] = useState(0);
+  const [imageError, setImageError] = useState(false);
+  const [formData, setFormData] = useState({});
+
+  useEffect(() => {
+    if (image) {
+      handleFileUpload(image);
+    }
+  }, [image]);
+
+  const handleFileUpload = async (image) => {
+    const storage = getStorage(app);
+    const fileName = new Date().getTime() + image.name;
+    const storageRef = ref(storage, fileName);
+    const uploadTask = uploadBytesResumable(storageRef, image);
+    uploadTask.on(
+      "state_changed",
+      (snapshot) => {
+        const progress =
+          (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+        setImagePercent(Math.round(progress)); //to display image Percent when uploading
+      },
+      (error) => {
+        setImageError(true);
+      },
+      () => {
+        getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+          setFormData({ ...formData, profilePicture: downloadURL });
+        });
+      }
+    );
+  };
 
   return (
     <div className="main-layout">
@@ -69,31 +111,68 @@ export default function Profile() {
               className="bg-transparent shadow-none"
             >
               <Card className="mx-auto w-full max-w-[24rem]">
-                <CardBody className="flex flex-col gap-4">
-                  <Typography variant="h4" color="blue-gray">
-                    Sign In
-                  </Typography>
-                  <Typography
-                    className="mb-3 font-normal"
-                    variant="paragraph"
-                    color="gray"
-                  >
-                    Enter your email and password to Sign In.
-                  </Typography>
-                  <Typography className="-mb-2" variant="h6">
-                    Your Email
-                  </Typography>
-                  <Input label="Email" size="lg" />
-                  <Typography className="-mb-2" variant="h6">
-                    Your Password
-                  </Typography>
-                  <Input label="Password" size="lg" />
-                </CardBody>
-                <CardFooter className="pt-0">
-                  <Button variant="gradient" onClick={handleOpen} fullWidth>
-                    Sign In
-                  </Button>
-                </CardFooter>
+                <form>
+                  <CardBody className="flex flex-col gap-4">
+                    <Typography
+                      variant="h4"
+                      color="blue-gray"
+                      className="text-center"
+                    >
+                      Update Profile
+                    </Typography>
+
+                    <input
+                      type="file"
+                      ref={fileRef}
+                      hidden
+                      accept="image/*"
+                      onChange={(e) => setImage(e.target.files[0])}
+                    />
+                    <div className="flex justify-center">
+                      <Avatar
+                        size="xxl"
+                        onClick={() => fileRef.current.click()}
+                        src={currentUser.profilePicture}
+                        alt="profile-picture"
+                      />
+                    </div>
+                    <Typography className="text-sm self-center">
+                      {imageError ? (
+                        <span className="text-red-700">
+                          Error Uploading Image(File size must be less than 2MB)
+                        </span>
+                      ) : imagePercent > 0 && imagePercent < 100 ? (
+                        <span className="text-gray-900">
+                          {`Uploading Image... ${imagePercent}%`}
+                        </span>
+                      ) : imagePercent === 100 ? (
+                        <span className="text-green-700">
+                          Image Uploaded Successfully.
+                        </span>
+                      ) : (
+                        ""
+                      )}
+                    </Typography>
+
+                    <Typography className="-mb-2" variant="h6">
+                      Your Username
+                    </Typography>
+                    <Input label="username" size="lg" />
+                    <Typography className="-mb-2" variant="h6">
+                      Your Email
+                    </Typography>
+                    <Input label="email" size="lg" />
+                    <Typography className="-mb-2" variant="h6">
+                      Your Password
+                    </Typography>
+                    <Input label="password" size="lg" />
+                  </CardBody>
+                  <CardFooter className="pt-0">
+                    <Button type="submit" variant="gradient" fullWidth>
+                      Sign In
+                    </Button>
+                  </CardFooter>
+                </form>
               </Card>
             </Dialog>
           </div>
