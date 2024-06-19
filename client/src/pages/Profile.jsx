@@ -132,7 +132,9 @@ export default function Profile() {
                       <Avatar
                         size="xxl"
                         onClick={() => fileRef.current.click()}
-                        src={currentUser.profilePicture}
+                        src={
+                          formData.profilePicture || currentUser.profilePicture
+                        }
                         alt="profile-picture"
                       />
                     </div>
