@@ -4,6 +4,9 @@ import { useRef } from "react";
 import {
   Card,
   Dialog,
+  DialogHeader,
+  DialogBody,
+  DialogFooter,
   CardBody,
   CardFooter,
   Input,
@@ -26,6 +29,9 @@ import {
   updateUserStart,
   updateUserFailure,
   updateUserSuccess,
+  deleteUserStart,
+  deleteUserFailure,
+  deleteUserSuccess,
 } from "../redux/user/userSlice";
 
 function SuccessIcon() {
@@ -67,6 +73,7 @@ function ErrorIcon() {
 export default function Profile() {
   const { currentUser, loading, error } = useSelector((state) => state.user);
   const [open, setOpen] = React.useState(false);
+  const [openDelete, setOpenDelete] = React.useState(false);
   const handleOpen = () => setOpen((cur) => !cur);
   const fileRef = useRef(null);
   const dispatch = useDispatch();
@@ -122,7 +129,7 @@ export default function Profile() {
     );
   };
 
-  //function to handle submit
+  //function to handle update user
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -151,6 +158,24 @@ export default function Profile() {
 
     setOpen(false);
   };
+
+  //function to handle delete user
+  const handleDeleteAccount = async (e) => {
+    try {
+      dispatch(deleteUserStart());
+      const res = await axios.delete(`/api/user/delete/${currentUser._id}`);
+      const data = res.data;
+      if (data.success === false) {
+        dispatch(deleteUserFailure(data));
+        return;
+      }
+      dispatch(deleteUserSuccess(data));
+    } catch (error) {
+      dispatch(deleteUserFailure(error));
+    }
+  };
+  //function to handle delete confirmation
+  const handleOpenDelete = () => setOpenDelete(!openDelete);
 
   return (
     <div className="main-layout">
@@ -202,7 +227,9 @@ export default function Profile() {
             </CardBody>
           </Card>
           <div className="mt-3 inline-flex gap-32">
-            <Button color="red">Delete Account</Button>
+            <Button color="red" onClick={handleOpenDelete}>
+              Delete Account
+            </Button>
             <Button color="green">Sign Out</Button>
 
             <Dialog
@@ -313,6 +340,51 @@ export default function Profile() {
           </div>
         </div>
       </div>
+      <Dialog open={openDelete} handler={handleOpenDelete}>
+        <DialogHeader>
+          <Typography variant="h5" color="blue-gray">
+            Your Attention is Required!
+          </Typography>
+        </DialogHeader>
+        <DialogBody divider className="grid place-items-center gap-4">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="1.5"
+            stroke="currentColor"
+            className="h-16 w-16 text-red-500"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z"
+            />
+          </svg>
+
+          <Typography color="blue-gray" variant="h4">
+            You Are About To Delete Your Account!
+          </Typography>
+          <Typography className="text-center font-normal">
+            Please be aware that by proceeding with the account deletion, all
+            your <b>data</b>, including <b> profile information</b>,
+            <b> posts </b>, and<b> interactions</b>,
+            <b className="text-red-800">will be permanently removed </b>
+            from our system. This action is irreversible, and you will not be
+            able to recover any of your data after the deletion process is
+            completed. If you are certain that you want to delete your account,
+            <b className="text-red-800"> please proceed with caution.</b>
+          </Typography>
+        </DialogBody>
+        <DialogFooter className="space-x-2">
+          <Button variant="text" color="blue-gray" onClick={handleOpenDelete}>
+            close
+          </Button>
+          <Button variant="gradient" color="red" onClick={handleDeleteAccount}>
+            Yes, Remove Account
+          </Button>
+        </DialogFooter>
+      </Dialog>
     </div>
   );
 }
