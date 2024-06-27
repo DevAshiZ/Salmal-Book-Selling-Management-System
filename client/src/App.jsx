@@ -4,6 +4,7 @@ import Profile from "./pages/Profile";
 import About from "./pages/About";
 import { NavigationBar } from "./components/NavigationBar";
 import PrivateRoute from "./components/PrivateRoute";
+import { Footer } from "./components/Footer";
 
 export default function App() {
   return (
@@ -17,6 +18,7 @@ export default function App() {
         </Route>
         <Route path="/about" element={<About />} />
       </Routes>
+      <Footer />
     </BrowserRouter>
   );
 }

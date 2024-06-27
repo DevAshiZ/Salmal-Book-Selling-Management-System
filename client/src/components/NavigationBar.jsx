@@ -192,6 +192,19 @@ function NavList() {
           </ListItem>
         </Link>
       </Typography>
+      <Typography
+        as="a"
+        href="#"
+        variant="small"
+        color="white"
+        className="font-medium"
+      >
+        <Link to="/about">
+          <ListItem className="flex items-center gap-2 py-2 pr-4">
+            About
+          </ListItem>
+        </Link>
+      </Typography>
       <NavListMenu />
       <Typography
         as="a"
@@ -356,7 +369,7 @@ export function NavigationBar() {
   }, [SignUpError, error, dispatch]);
 
   return (
-    <div
+    <header
       className="mx-auto max-w-screen px-4 py-2 "
       style={{ backgroundColor: "#191919" }}
     >
@@ -397,41 +410,47 @@ export function NavigationBar() {
             </Button>
           </div>
         )}
-
-        <IconButton
-          variant="text"
-          color="blue-gray"
-          className="lg:hidden"
-          onClick={() => setOpenNav(!openNav)}
-        >
-          {openNav ? (
-            <XMarkIcon className="h-6 w-6" strokeWidth={2} />
-          ) : (
-            <Bars3Icon className="h-6 w-6" strokeWidth={2} />
-          )}
-        </IconButton>
       </div>
+
       <Collapse open={openNav}>
         <NavList />
-        <div className="flex w-full flex-nowrap items-center gap-2 lg:hidden">
-          <Button
-            variant="outlined"
-            size="sm"
-            color="blue-gray"
-            fullWidth
-            onClick={handleOpenLogIn}
-          >
-            Log In
-          </Button>
 
-          <Button
-            size="sm"
-            style={{ backgroundColor: "white", color: "black" }}
-            onClick={handleOpenSignUp}
-          >
-            Sign In
-          </Button>
-        </div>
+        {currentUser ? (
+          ""
+        ) : (
+          <div>
+            <IconButton
+              variant="text"
+              color="blue-gray"
+              className="lg:hidden"
+              onClick={() => setOpenNav(!openNav)}
+            >
+              {openNav ? (
+                <XMarkIcon className="h-6 w-6" strokeWidth={2} />
+              ) : (
+                <Bars3Icon className="h-6 w-6" strokeWidth={2} />
+              )}
+            </IconButton>
+            <div className="flex w-full flex-nowrap items-center gap-2 lg:hidden">
+              <Button
+                variant="outlined"
+                size="sm"
+                color="blue-gray"
+                fullWidth
+                onClick={handleOpenLogIn}
+              >
+                Log In
+              </Button>
+              <Button
+                size="sm"
+                style={{ backgroundColor: "white", color: "black" }}
+                onClick={handleOpenSignUp}
+              >
+                Sign In
+              </Button>
+            </div>
+          </div>
+        )}
       </Collapse>
       {/* To handle Login Button */}
       <Dialog
@@ -618,6 +637,6 @@ export function NavigationBar() {
           </form>
         </Card>
       </Dialog>
-    </div>
+    </header>
   );
 }

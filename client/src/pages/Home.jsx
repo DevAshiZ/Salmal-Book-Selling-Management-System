@@ -1,9 +1,10 @@
 import React from "react";
+import Book from "../components/about/Book";
 
 export default function Home() {
   return (
-    <div>
-      <div className="">Home</div>
+    <div className="mt-10">
+      <Book />
     </div>
   );
 }
