@@ -2,6 +2,11 @@ import mongoose from "mongoose";
 
 const userSchema = new mongoose.Schema(
   {
+    userID: {
+      type: String,
+      required: true,
+      unique: true,
+    },
     name: {
       type: String,
       default: "change me later",
@@ -10,6 +15,12 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
       unique: true,
+    },
+    address: {
+      type: String,
+    },
+    age: {
+      type: Number,
     },
     email: {
       type: String,
@@ -20,6 +31,15 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    phone_number: {
+      type: String,
+    },
+    userType: {
+      type: String,
+      enum: ["Customer", "Manager", "Delivery Person"],
+      default: "Customer",
+    },
+
     profilePicture: {
       type: String,
       default:

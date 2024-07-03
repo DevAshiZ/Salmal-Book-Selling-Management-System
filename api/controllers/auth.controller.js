@@ -4,10 +4,18 @@ import { errorHandler } from "../utils/error.js";
 import jwt from "jsonwebtoken";
 
 export const signup = async (req, res, next) => {
-  const { username, email, password } = req.body;
+  const { name, username, age, email, password } = req.body;
 
+  const userID = "user_" + Math.floor(10000 + Math.random() * 90000);
   const hashPassword = bcryptjs.hashSync(password, 10);
-  const newUser = new User({ username, email, password: hashPassword });
+  const newUser = new User({
+    userID,
+    name,
+    age,
+    username,
+    email,
+    password: hashPassword,
+  });
 
   try {
     await newUser.save();
@@ -67,7 +75,10 @@ export const google = async (req, res, next) => {
       //if the user is not in the database
       const generatedPassword = Math.random().toString(36).slice(-8);
       const hashPassword = bcryptjs.hashSync(generatedPassword, 10);
+      const userID = "user_" + Math.floor(10000 + Math.random() * 90000);
+
       const newUser = new User({
+        userID,
         username:
           req.body.name.split(" ").join("").toLowerCase() +
           Math.floor(Math.random() * 10000).toString(),

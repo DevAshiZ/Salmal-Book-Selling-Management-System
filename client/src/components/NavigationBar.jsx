@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import logoImg from "../images/logo.svg";
+import logoBnW from "../images/logoBnW.svg";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import {
@@ -48,6 +49,7 @@ import {
   UserGroupIcon,
 } from "@heroicons/react/24/solid";
 import OAuth from "./OAuth";
+import MiniHeader from "./accessories/MiniHeader";
 
 const navListMenuItems = [
   {
@@ -244,6 +246,7 @@ export function NavigationBar() {
   const [openNav, setOpenNav] = React.useState(false);
   const [openLogin, setOpenLogIn] = React.useState(false);
   const [openSignUp, setOpenSignUp] = React.useState(false);
+  const [passwordsMatch, setPasswordsMatch] = useState(true); // State to track password match
 
   const { loading, error } = useSelector((state) => state.user); //this error and loading is from signUp
   const [SignUpError, setSignUpError] = useState(false);
@@ -272,11 +275,33 @@ export function NavigationBar() {
 
   //functions that handles on change in forms
   const handleChangeSignUp = (e) => {
-    setSignUpFormData({ ...signUpFormData, [e.target.id]: e.target.value });
+    const { id, value } = e.target;
+
+    setSignUpFormData((prevFormData) => ({
+      ...prevFormData,
+      [id]: id === "email" ? value.toLowerCase() : value, //lowercasing the email
+    }));
   };
 
   const handleChangeSignIn = (e) => {
     setSignInFormData({ ...signInFormData, [e.target.id]: e.target.value });
+  };
+
+  //validation functions to not entering invalid inputs
+
+  //validation to prevent user entering symbols except @
+  const handleKeyPress = (e) => {
+    // If the pressed key is not a letter, digit, or '@', prevent the default action
+    if (!/[a-zA-Z0-9@]/.test(e.key)) {
+      e.preventDefault();
+    }
+  };
+
+  const handleKeyPressName = (e) => {
+    // If the pressed key is not a letter, digit, or '@', prevent the default action
+    if (!/[a-zA-Z0-9@\- ]/.test(e.key)) {
+      e.preventDefault();
+    }
   };
 
   //functions that handles login and signup forms
@@ -284,6 +309,15 @@ export function NavigationBar() {
     e.preventDefault(); // to prevent website refreshing when data is submitting
     try {
       setSignUpLoading(true);
+
+      console.log("this works");
+      // Check if passwords match
+      if (signUpFormData.password.trim() !== signUpFormData.repassword.trim()) {
+        setPasswordsMatch(false);
+        setSignUpLoading(false);
+        return;
+      }
+
       const res = await axios.post("/api/auth/signup", signUpFormData, {
         headers: { "Content-Type": "application/json" },
       });
@@ -294,6 +328,8 @@ export function NavigationBar() {
       }
       setSignUpLoading(false);
       setSignUpError(false);
+      // Reset password match state for next submission
+      setPasswordsMatch(true);
     } catch (SignUpError) {
       setSignUpLoading(false);
       setSignUpError(true);
@@ -329,18 +365,6 @@ export function NavigationBar() {
     }
   };
 
-  // //THIS METHOD IS FETCH METHOD TO HANDLE REQUESTS
-  // const handleSignUpSubmit = async (e) => {
-  //   e.preventDefault(); //to prevent website refreshing when data is submitting
-  //   const res = await fetch("/api/auth/signup", {
-  //     method: "POST",
-  //     headers: { "Content-Type": "application/json" },
-  //     body: JSON.stringify(signUpFormData),
-  //   });
-  //   const data = await res.json();
-  //   console.log(data);
-  // };
-
   React.useEffect(() => {
     window.addEventListener(
       "resize",
@@ -369,274 +393,314 @@ export function NavigationBar() {
   }, [SignUpError, error, dispatch]);
 
   return (
-    <header
-      className="mx-auto max-w-screen px-4 py-2 "
-      style={{ backgroundColor: "#191919" }}
-    >
-      <div className="flex items-center justify-between text-blue-gray-900">
-        <img
-          src={logoImg}
-          alt="Logo"
-          style={{ width: "150px", height: "auto" }}
-        />
-        <div className="hidden lg:block">
-          <NavList />
-        </div>
-        {currentUser ? (
-          <Link to="/profile">
-            <Avatar
-              src={currentUser.profilePicture}
-              alt="profile"
-              className="mr-5"
-            />
-          </Link>
-        ) : (
-          <div className="hidden gap-2 lg:flex">
-            <Button
-              variant="text"
-              size="sm"
-              color="white"
-              onClick={handleOpenLogIn}
-            >
-              Log In
-            </Button>
-            <Button
-              variant="gradient"
-              size="sm"
-              color="white"
-              onClick={handleOpenSignUp}
-            >
-              Sign Up
-            </Button>
+    <div>
+      <MiniHeader />
+      <header
+        className="mx-auto max-w-screen px-4 py-2 "
+        style={{ backgroundColor: "#191919" }}
+      >
+        <div className="flex items-center justify-between text-blue-gray-900">
+          <img
+            src={logoImg}
+            alt="Logo"
+            style={{ width: "150px", height: "auto" }}
+          />
+          <div className="hidden lg:block">
+            <NavList />
           </div>
-        )}
-      </div>
-
-      <Collapse open={openNav}>
-        <NavList />
-
-        {currentUser ? (
-          ""
-        ) : (
-          <div>
-            <IconButton
-              variant="text"
-              color="blue-gray"
-              className="lg:hidden"
-              onClick={() => setOpenNav(!openNav)}
-            >
-              {openNav ? (
-                <XMarkIcon className="h-6 w-6" strokeWidth={2} />
-              ) : (
-                <Bars3Icon className="h-6 w-6" strokeWidth={2} />
-              )}
-            </IconButton>
-            <div className="flex w-full flex-nowrap items-center gap-2 lg:hidden">
+          {currentUser ? (
+            <Link to="/profile">
+              <Avatar
+                src={currentUser.profilePicture}
+                alt="profile"
+                className="mr-5"
+              />
+            </Link>
+          ) : (
+            <div className="hidden gap-2 lg:flex">
               <Button
-                variant="outlined"
+                variant="text"
                 size="sm"
-                color="blue-gray"
-                fullWidth
+                color="white"
                 onClick={handleOpenLogIn}
               >
                 Log In
               </Button>
               <Button
+                variant="gradient"
                 size="sm"
-                style={{ backgroundColor: "white", color: "black" }}
+                color="white"
                 onClick={handleOpenSignUp}
               >
-                Sign In
+                Sign Up
               </Button>
             </div>
-          </div>
-        )}
-      </Collapse>
-      {/* To handle Login Button */}
-      <Dialog
-        size="xs"
-        open={openLogin}
-        handler={handleOpenLogIn}
-        className="bg-transparent shadow-none"
-      >
-        <Card className="mx-auto w-full max-w-[24rem]">
-          <form onSubmit={handleLoginSubmit}>
-            <CardBody className="flex flex-col gap-4">
-              <Typography variant="h4" color="blue-gray">
-                Sign In
-              </Typography>
-              <Typography
-                className="mb-3 font-normal"
-                variant="paragraph"
-                color="gray"
+          )}
+        </div>
+
+        <Collapse open={openNav}>
+          <NavList />
+
+          {currentUser ? (
+            ""
+          ) : (
+            <div>
+              <IconButton
+                variant="text"
+                color="blue-gray"
+                className="lg:hidden"
+                onClick={() => setOpenNav(!openNav)}
               >
-                Enter your email and password to Sign In.
-              </Typography>
-              <Typography className="-mb-2" variant="h6">
-                Your Email
-              </Typography>
-              <Input
-                id="email"
-                label="email"
-                type="email"
-                onChange={handleChangeSignIn}
-                size="lg"
-              />
-              <Typography className="-mb-2" variant="h6">
-                Your Password
-              </Typography>
-              <Input
-                id="password"
-                label="password"
-                type="password"
-                onChange={handleChangeSignIn}
-                size="lg"
-              />
-              <div className="-ml-2.5 -mt-3">
-                <Checkbox label="Remember Me" />
-              </div>
-              {error && (
-                <Alert
-                  icon={<Icon />}
-                  className="rounded-none border-l-4 border-[#c9402e] bg-[#c9402e]/10 font-medium text-[#c9402e] mt-2"
-                >
-                  {error || "Error Login with the System. Retry"}
-                </Alert>
-              )}
-            </CardBody>
-            <CardFooter className="pt-0">
-              <Button
-                disabled={loading}
-                className="uppercase"
-                variant="gradient"
-                type="submit"
-                fullWidth
-              >
-                {loading ? "Login In..." : "Sign In"}
-              </Button>
-              <OAuth />
-              <Typography variant="small" className="mt-4 flex justify-center">
-                Don&apos;t have an account?
-                <Typography
-                  as="a"
-                  onClick={handleOpenSignUp}
-                  variant="small"
+                {openNav ? (
+                  <XMarkIcon className="h-6 w-6" strokeWidth={2} />
+                ) : (
+                  <Bars3Icon className="h-6 w-6" strokeWidth={2} />
+                )}
+              </IconButton>
+              <div className="flex w-full flex-nowrap items-center gap-2 lg:hidden">
+                <Button
+                  variant="outlined"
+                  size="sm"
                   color="blue-gray"
-                  className="ml-1 font-bold"
+                  fullWidth
+                  onClick={handleOpenLogIn}
                 >
-                  Sign up
-                </Typography>
-              </Typography>
-            </CardFooter>
-          </form>
-        </Card>
-      </Dialog>
-
-      {/* To handle SignUp Button */}
-      <Dialog
-        size="xs"
-        open={openSignUp}
-        handler={handleOpenSignUp}
-        className="bg-transparent shadow-none"
-      >
-        <Card className="mx-auto w-full">
-          <form onSubmit={handleSignUpSubmit}>
-            <CardBody className="flex flex-col gap-4">
-              <Typography variant="h4" color="blue-gray">
-                Sign Up
-              </Typography>
-              <Typography
-                className="mb-3 font-normal"
-                variant="paragraph"
-                color="gray"
-              >
-                Enter your details to register with us!
-              </Typography>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <Typography className="mb-2" variant="h6">
-                    Your Name
-                  </Typography>
-                  <Input
-                    label="Name"
-                    id="name"
-                    size="sm"
-                    onChange={handleChangeSignUp}
-                  />
-                </div>
-                <div>
-                  <Typography className="mb-2" variant="h6">
-                    User Name
-                  </Typography>
-                  <Input
-                    label="User Name"
-                    size="sm"
-                    id="username"
-                    onChange={handleChangeSignUp}
-                  />
-                </div>
-                <div>
-                  <Typography className="mb-2" variant="h6">
-                    Your Email
-                  </Typography>
-                  <Input
-                    type="email"
-                    label="Email"
-                    size="sm"
-                    id="email"
-                    onChange={handleChangeSignUp}
-                  />
-                </div>
-                <div>
-                  <Typography className="mb-2" variant="h6">
-                    Enter Password
-                  </Typography>
-                  <Input
-                    type="password"
-                    label="Password"
-                    size="sm"
-                    id="password"
-                    onChange={handleChangeSignUp}
-                  />
-                </div>
-                <div className="col-span-1 sm:col-span-2">
-                  <Typography className="mb-2" variant="h6">
-                    Re-Enter Password
-                  </Typography>
-                  <Input
-                    type="password"
-                    label="Password"
-                    size="sm"
-                    id="repassword"
-                    onChange={handleChangeSignUp}
-                  />
-                </div>
+                  Log In
+                </Button>
+                <Button
+                  size="sm"
+                  style={{ backgroundColor: "white", color: "black" }}
+                  onClick={handleOpenSignUp}
+                >
+                  Sign In
+                </Button>
               </div>
-            </CardBody>
-            <CardFooter className="pt-0">
-              <Button
-                variant="gradient"
-                type="submit"
-                fullWidth
-                disabled={SignUpLoading}
-                className="uppercase"
-              >
-                {SignUpLoading ? "Loading " : "Sign Up"}
-              </Button>
-              <OAuth />
-              {SignUpError && (
-                <Alert
-                  icon={<Icon />}
-                  className="rounded-none border-l-4 border-[#c9402e] bg-[#c9402e]/10 font-medium text-[#c9402e] mt-2"
+            </div>
+          )}
+        </Collapse>
+        {/* To handle Login Button */}
+        <Dialog
+          size="xs"
+          open={openLogin}
+          handler={handleOpenLogIn}
+          className="bg-transparent shadow-none"
+        >
+          <Card className="mx-auto w-full max-w-[24rem]">
+            <form onSubmit={handleLoginSubmit}>
+              <CardBody className="flex flex-col gap-3">
+                <div className="flex items-center justify-between">
+                  <Typography variant="h4" color="blue-gray">
+                    Sign In
+                  </Typography>
+                  <img src={logoBnW} className="w-32" />
+                </div>
+                <Typography
+                  className="font-normal"
+                  variant="paragraph"
+                  color="gray"
                 >
-                  User Registeration Error. Retry.
-                </Alert>
-              )}
-            </CardFooter>
-          </form>
-        </Card>
-      </Dialog>
-    </header>
+                  Enter your email and password to Sign In.
+                </Typography>
+                <Typography className="-mb-2" variant="h6">
+                  Your Email
+                </Typography>
+                <Input
+                  id="email"
+                  label="email"
+                  type="email"
+                  onKeyPress={handleKeyPress}
+                  required
+                  onChange={handleChangeSignIn}
+                  size="lg"
+                />
+                <Typography className="-mb-2" variant="h6">
+                  Your Password
+                </Typography>
+                <Input
+                  id="password"
+                  label="password"
+                  type="password"
+                  onChange={handleChangeSignIn}
+                  size="lg"
+                />
+                <div className="-ml-2.5 -mt-3">
+                  <Checkbox label="Remember Me" />
+                </div>
+                {error && (
+                  <Alert
+                    icon={<Icon />}
+                    className="rounded-none border-l-4 border-[#c9402e] bg-[#c9402e]/10 font-medium text-[#c9402e] mt-2"
+                  >
+                    {error || "Error Login with the System. Retry"}
+                  </Alert>
+                )}
+              </CardBody>
+              <CardFooter className="pt-0">
+                <Button
+                  disabled={loading}
+                  className="uppercase"
+                  variant="gradient"
+                  type="submit"
+                  fullWidth
+                >
+                  {loading ? "Login In..." : "Sign In"}
+                </Button>
+                <OAuth />
+                <Typography
+                  variant="small"
+                  className="mt-4 flex justify-center"
+                >
+                  Don&apos;t have an account?
+                  <Typography
+                    as="a"
+                    onClick={handleOpenSignUp}
+                    variant="small"
+                    color="blue-gray"
+                    className="ml-1 font-bold"
+                  >
+                    Sign up
+                  </Typography>
+                </Typography>
+              </CardFooter>
+            </form>
+          </Card>
+        </Dialog>
+
+        {/* To handle SignUp Button */}
+        <Dialog
+          size="xs"
+          open={openSignUp}
+          handler={handleOpenSignUp}
+          className="bg-transparent shadow-none"
+        >
+          <Card className="mx-auto w-full">
+            <form onSubmit={handleSignUpSubmit}>
+              <CardBody className="flex flex-col gap-3">
+                <div className="flex items-center justify-between">
+                  <Typography variant="h4" color="blue-gray">
+                    Sign Up
+                  </Typography>
+                  <img src={logoBnW} className="w-32" />
+                </div>
+                <Typography
+                  className=" font-normal"
+                  variant="paragraph"
+                  color="gray"
+                >
+                  Enter your details to register with us!
+                </Typography>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <Typography className="mb-1" variant="h6">
+                      Your Name
+                    </Typography>
+                    <Input
+                      label="Name"
+                      id="name"
+                      size="sm"
+                      onKeyPress={handleKeyPressName}
+                      onChange={handleChangeSignUp}
+                    />
+                  </div>
+                  <div>
+                    <Typography className="mb-1" variant="h6">
+                      User Name
+                    </Typography>
+                    <Input
+                      label="User Name"
+                      size="sm"
+                      id="username"
+                      onKeyPress={handleKeyPressName}
+                      onChange={handleChangeSignUp}
+                    />
+                  </div>
+                  <div>
+                    <Typography className="mb-1" variant="h6">
+                      Your Email
+                    </Typography>
+                    <Input
+                      type="email"
+                      label="Email"
+                      size="sm"
+                      id="email"
+                      onKeyPress={handleKeyPress}
+                      onChange={handleChangeSignUp}
+                    />
+                  </div>
+                  <div>
+                    <Typography className="mb-1" variant="h6">
+                      Your Age
+                    </Typography>
+                    <Input
+                      type="text"
+                      label="Age"
+                      size="sm"
+                      id="age"
+                      onKeyPress={handleKeyPressName}
+                      onChange={handleChangeSignUp}
+                    />
+                  </div>
+                  <div>
+                    <Typography className="mb-1" variant="h6">
+                      Enter Password
+                    </Typography>
+                    <Input
+                      type="password"
+                      label="Password"
+                      size="sm"
+                      id="password"
+                      onChange={handleChangeSignUp}
+                    />
+                  </div>
+                  <div>
+                    <Typography className="mb-1" variant="h6">
+                      Re-Enter Password
+                    </Typography>
+                    <Input
+                      type="password"
+                      label="Password"
+                      size="sm"
+                      id="repassword"
+                      onChange={handleChangeSignUp}
+                    />
+                  </div>
+                </div>
+              </CardBody>
+              <CardFooter className="pt-0">
+                <Button
+                  variant="gradient"
+                  type="submit"
+                  fullWidth
+                  disabled={SignUpLoading}
+                  className="uppercase"
+                >
+                  {SignUpLoading ? "Loading " : "Sign Up"}
+                </Button>
+                <OAuth />
+                {SignUpError && (
+                  <Alert
+                    icon={<Icon />}
+                    className="rounded-none border-l-4 border-[#c9402e] bg-[#c9402e]/10 font-medium text-[#c9402e] mt-2"
+                  >
+                    User Registeration Error. Retry.
+                  </Alert>
+                )}
+                {!passwordsMatch && (
+                  <>
+                    <Alert
+                      icon={<Icon />}
+                      className="rounded-none border-l-4 border-[#c9402e] bg-[#c9402e]/10 font-medium text-[#c9402e] mt-2"
+                    >
+                      Password do not match. please re-enter
+                    </Alert>
+                  </>
+                )}
+              </CardFooter>
+            </form>
+          </Card>
+        </Dialog>
+      </header>
+    </div>
   );
 }

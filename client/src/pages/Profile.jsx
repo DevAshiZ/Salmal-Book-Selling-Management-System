@@ -34,6 +34,7 @@ import {
   deleteUserSuccess,
   signOut,
 } from "../redux/user/userSlice";
+import { Footer } from "../components/Footer";
 
 function SuccessIcon() {
   return (
@@ -188,9 +189,9 @@ export default function Profile() {
   const handleOpenDelete = () => setOpenDelete(!openDelete);
 
   return (
-    <div className="main-layout">
+    <div className="main-layout ">
       <SideBar />
-      <div className="inner-layout flex justify-center">
+      <div className="inner-layout flex justify-center h-full  ">
         <div>
           {showAlert && (
             <Alert
@@ -203,7 +204,7 @@ export default function Profile() {
           <Typography variant="h4" color="blue-gray" className="text-center">
             My Profile
           </Typography>
-          <Card className="w-96 items-center mt-5 pt-5">
+          <Card className="items-center mt-5 pt-5 w-auto  overflow-auto">
             <Avatar
               size="xxl"
               src={currentUser.profilePicture}
@@ -227,8 +228,17 @@ export default function Profile() {
                   <span className="font-normal ">{currentUser.email}</span>
                 </Typography>
                 <Typography variant="h6" color="blue-gray">
-                  CreatedAt:{" "}
-                  <span className="font-normal ">{currentUser.createdAt}</span>
+                  Age: <span className="font-normal ">{currentUser.age}</span>
+                </Typography>
+                <Typography variant="h6" color="blue-gray">
+                  Contact Number:{" "}
+                  <span className="font-normal ">
+                    {currentUser.phone_number}
+                  </span>
+                </Typography>
+                <Typography variant="h6" color="blue-gray">
+                  Address:{" "}
+                  <span className="font-normal ">{currentUser.address}</span>
                 </Typography>
               </div>
               <Button fullWidth className="mt-3" onClick={handleOpen}>
@@ -250,7 +260,7 @@ export default function Profile() {
               handler={handleOpen}
               className="bg-transparent shadow-none"
             >
-              <Card className="mx-auto w-full max-w-[24rem]">
+              <Card className="mx-auto w-full">
                 <form onSubmit={handleSubmit}>
                   <CardBody className="flex flex-col gap-4">
                     <Typography
@@ -296,37 +306,84 @@ export default function Profile() {
                       )}
                     </Typography>
 
-                    <Typography className="-mb-2" variant="h6">
-                      Your Username
-                    </Typography>
-                    <Input
-                      id="username"
-                      label="username"
-                      size="lg"
-                      defaultValue={currentUser.username}
-                      onChange={handleChange}
-                    />
-                    <Typography className="-mb-2" variant="h6">
-                      Your Email
-                    </Typography>
-                    <Input
-                      id="email"
-                      label="email"
-                      type="email"
-                      size="lg"
-                      defaultValue={currentUser.email}
-                      onChange={handleChange}
-                    />
-                    <Typography className="-mb-2" variant="h6">
-                      Your Password
-                    </Typography>
-                    <Input
-                      type="password"
-                      id="password"
-                      label="password"
-                      size="lg"
-                      onChange={handleChange}
-                    />
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <Typography className="mb-2" variant="h6">
+                          Your Username
+                        </Typography>
+                        <Input
+                          id="username"
+                          label="username"
+                          size="sm"
+                          defaultValue={currentUser.username}
+                          onChange={handleChange}
+                        />
+                      </div>
+                      <div>
+                        <Typography className="mb-2" variant="h6">
+                          Your Email
+                        </Typography>
+                        <Input
+                          id="email"
+                          label="email"
+                          type="email"
+                          size="sm"
+                          defaultValue={currentUser.email}
+                          onChange={handleChange}
+                        />
+                      </div>
+                      <div>
+                        <Typography className="mb-2" variant="h6">
+                          Age
+                        </Typography>
+                        <Input
+                          id="age"
+                          label="age"
+                          type="number"
+                          size="sm"
+                          defaultValue={currentUser.age}
+                          onChange={handleChange}
+                        />
+                      </div>
+                      <div>
+                        <Typography className="mb-2" variant="h6">
+                          Phone Number
+                        </Typography>
+                        <Input
+                          id="phone_number"
+                          label="phone number"
+                          type="text"
+                          size="sm"
+                          defaultValue={currentUser.phone_number}
+                          onChange={handleChange}
+                        />
+                      </div>
+                      <div>
+                        <Typography className="mb-2" variant="h6">
+                          Address
+                        </Typography>
+                        <Input
+                          id="address"
+                          label="address"
+                          type="text"
+                          size="sm"
+                          defaultValue={currentUser.address}
+                          onChange={handleChange}
+                        />
+                      </div>
+                      <div>
+                        <Typography className="mb-2" variant="h6">
+                          Your Password
+                        </Typography>
+                        <Input
+                          type="password"
+                          id="password"
+                          label="password"
+                          size="sm"
+                          onChange={handleChange}
+                        />
+                      </div>
+                    </div>
                   </CardBody>
                   <CardFooter className="pt-0">
                     <Button

@@ -2,11 +2,11 @@ import User from "../models/users.model.js";
 import { errorHandler } from "../utils/error.js";
 import bcryptjs from "bcryptjs";
 
-export const test = (req, res) => {
-  res.json({
-    message: "API is working!",
-  });
-};
+// export const test = (req, res) => {
+//   res.json({
+//     message: "API is working!",
+//   });
+// };
 
 //update user
 export const updateUser = async (req, res, next) => {
@@ -22,9 +22,13 @@ export const updateUser = async (req, res, next) => {
       req.params.id,
       {
         $set: {
+          name: req.body.name,
           username: req.body.username,
+          address: req.body.address,
+          age: req.body.age,
           email: req.body.email,
           password: req.body.password,
+          phone_number: req.body.phone_number,
           profilePicture: req.body.profilePicture,
         },
       },

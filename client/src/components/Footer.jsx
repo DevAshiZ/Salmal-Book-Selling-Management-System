@@ -25,10 +25,10 @@ const currentYear = new Date().getFullYear();
 export function Footer() {
   return (
     <footer
-      className="relative w-full bg-gray-200 "
+      className="relative w-full  bg-gray-200 mt-auto"
       style={{ overflowY: "auto", maxHeight: "100vh" }}
     >
-      <div className="mx-auto w-full max-w-7xl px-8">
+      <div className="mx-auto w-full max-w-7xl px-3">
         <div className="grid grid-cols-1 justify-between gap-4 md:grid-cols-2">
           <img
             src={logoImg}
@@ -36,7 +36,7 @@ export function Footer() {
             style={{ width: "200px", height: "auto" }}
             className="pt-12"
           />
-          <div className="mx-auto grid w-full grid-cols-1 gap-8 py-12 md:grid-cols-2 lg:grid-cols-4">
+          <div className="mx-auto grid w-full grid-cols-1 gap-8 py-8 md:grid-cols-2 lg:grid-cols-4">
             {SITEMAP.map(({ title, links }, key) => (
               <div key={key} className="w-full">
                 <Typography
@@ -67,7 +67,7 @@ export function Footer() {
             ))}
           </div>
         </div>
-        <div className="mt-12 flex w-full flex-col items-center justify-center border-t border-blue-gray-50 py-4 md:flex-row md:justify-between">
+        <div className="flex w-full flex-col items-center justify-center border-t border-blue-gray-800 py-2 md:flex-row md:justify-between">
           <Typography
             variant="small"
             className="mb-4 text-center font-normal text-blue-gray-900 md:mb-0"
