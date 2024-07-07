@@ -14,9 +14,8 @@
 @layer utilities {
   body {
     position: relative;
-    margin: 0;
-    padding: 0;
     overflow: auto;
+    max-width: screen;
     overflow-x: hidden;
   }
 
@@ -66,9 +65,9 @@
 
   .inner-layout-home {
     background-color: #f5f5f5;
-    padding-top: 2rem;
-    padding-left: 1rem;
-    padding-right: 1rem;
+    padding-left: 20px;
+    padding-right: 20px;
+    width: "screen";
     box-shadow: 0px 0px 25px 0px rgba(0, 0, 0, 0.1);
   }
 

@@ -19,14 +19,14 @@ import {
   PowerIcon,
 } from "@heroicons/react/24/solid";
 import { CardSlider } from "../components/home/CardSlider";
+import PopularBooks from "../components/home/PopularBooks";
 
 export default function Home() {
   return (
-    <div>
+    <div className="w-screen">
       <div
         style={{
           position: "relative",
-          width: "100vw",
           height: 150,
         }}
       >
@@ -61,25 +61,29 @@ export default function Home() {
         style={{ color: "white", background: "#393646" }}
       ></div>
 
-      <div className="flex ">
+      <div className="flex w-screen">
         {/* Side Bar */}
-        <Card className=" pr-2 pt-2 shadow-xl shadow-blue-gray-900/5 rounded-none">
+        <Card className="w-48 pr-2 pt-2 shadow-xl shadow-blue-gray-900/5 rounded-none">
           <List>
-            <ListItem>Best Sellers</ListItem>
-            <ListItem>New Arrival</ListItem>
-            <ListItem>Offers</ListItem>
-            <ListItem>On-Demand</ListItem>
-            <ListItem>Office Stationary</ListItem>
-            <ListItem>Bundle Offers</ListItem>
-            <ListItem>Authors</ListItem>
-            <ListItem>Publishers</ListItem>
-            <ListItem>Gift Vouchers</ListItem>
-            <ListItem>School Book Lists</ListItem>
-            <ListItem>Toys</ListItem>
+            <ListItem className="w-48">Best Sellers</ListItem>
+            <ListItem className="w-48">New Arrival</ListItem>
+            <ListItem className="w-48">Offers</ListItem>
+            <ListItem className="w-48">On-Demand</ListItem>
+            <ListItem className="w-48">Office Stationary</ListItem>
+            <ListItem className="w-48">Bundle Offers</ListItem>
+            <ListItem className="w-48">Authors</ListItem>
+            <ListItem className="w-48">Publishers</ListItem>
+            <ListItem className="w-48">Gift Vouchers</ListItem>
+            <ListItem className="w-48">School Book Lists</ListItem>
+            <ListItem className="w-48">Toys</ListItem>
           </List>
         </Card>
-        <div className="inner-layout-home ">
-          <CardSlider />
+
+        {/* Main Content */}
+        <div className=" inner-layout-home w-screen">
+          <div className="  w-[67rem] ">
+            <CardSlider />
+          </div>
         </div>
       </div>
     </div>

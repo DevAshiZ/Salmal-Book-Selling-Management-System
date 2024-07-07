@@ -25,7 +25,7 @@ const currentYear = new Date().getFullYear();
 export function Footer() {
   return (
     <footer
-      className="relative w-full  bg-gray-200 mt-auto"
+      className="relative w-screen bg-gray-200 mt-auto"
       style={{ overflowY: "auto", maxHeight: "100vh" }}
     >
       <div className="mx-auto w-full max-w-7xl px-3">
