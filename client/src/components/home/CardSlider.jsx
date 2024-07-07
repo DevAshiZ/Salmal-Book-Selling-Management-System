@@ -38,7 +38,6 @@ function NextArrow(props) {
     <IconButton
       variant="text"
       color="white"
-      size="lg"
       onClick={onClick}
       className="!absolute top-2/4 !right-4 -translate-y-2/4"
     >
@@ -66,9 +65,8 @@ function PrevArrow(props) {
     <IconButton
       variant="text"
       color="white"
-      size="lg"
       onClick={onClick}
-      className="!absolute top-2/4 left-4 -translate-y-2/4"
+      className="!absolute top-2/4 left-4 transform -translate-y-2/4 z-10"
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -124,15 +122,14 @@ export function CardSlider() {
   };
 
   return (
-    <div style={{ marginTop: "10px" }}>
+    <div className="mt-4">
       <Slider {...settings}>
         {cards.map((card, index) => (
           <div key={index}>
             <Card
-              className="mr-5"
               style={{
-                height: "auto", // Adjust height to maintain aspect ratio
-                width: "250px", // Adjust width as per your design
+                height: "auto",
+                width: "250px",
                 maxWidth: "100%",
                 boxSizing: "border-box",
               }}
@@ -209,7 +206,8 @@ export function CardSlider() {
                         <Button
                           ripple={false}
                           fullWidth={true}
-                          className="mt-3 shadow-none hover:scale-105 hover:shadow-none focus:scale-105 focus:shadow-none active:scale-100"
+                          size="sm"
+                          className="mt-4 shadow-none hover:scale-105 hover:shadow-none focus:scale-105 focus:shadow-none active:scale-100"
                         >
                           Add to Cart
                         </Button>

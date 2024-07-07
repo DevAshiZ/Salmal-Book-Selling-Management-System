@@ -9,12 +9,7 @@ export default function MiniHeader() {
     >
       <ul className="flex flex-wrap gap-3 uppercase justify-center">
         <li className="flex items-center">
-          <Typography
-            style={{
-              fontSize: "12px",
-              letterSpacing: "2px",
-            }}
-          >
+          <Typography className="mini-header-typography">
             Best Sellers
           </Typography>
           <svg
@@ -23,7 +18,7 @@ export default function MiniHeader() {
             viewBox="0 0 24 24"
             strokeWidth="1.5"
             stroke="currentColor"
-            className="h-4 w-4 ml-2"
+            className="mini-header-svg"
           >
             <path
               strokeLinecap="round"
@@ -31,18 +26,10 @@ export default function MiniHeader() {
               d="M2.25 18 9 11.25l4.306 4.306a11.95 11.95 0 0 1 5.814-5.518l2.74-1.22m0 0-5.94-2.281m5.94 2.28-2.28 5.941"
             />
           </svg>
-          <span
-            style={{
-              fontSize: "12px",
-              letterSpacing: "2px",
-            }}
-            className="ml-4"
-          >
-            |
-          </span>
+          <span className="ml-4 mini-header-typography">|</span>
         </li>
         <li className="flex items-center">
-          <Typography style={{ fontSize: "12px", letterSpacing: "2px" }}>
+          <Typography className="mini-header-typography">
             New Arrivals
           </Typography>
           <svg
@@ -51,7 +38,7 @@ export default function MiniHeader() {
             viewBox="0 0 24 24"
             strokeWidth="1.5"
             stroke="currentColor"
-            className="h-4 w-4 ml-2"
+            className="mini-header-svg"
           >
             <path
               strokeLinecap="round"
@@ -59,27 +46,17 @@ export default function MiniHeader() {
               d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09ZM18.259 8.715 18 9.75l-.259-1.035a3.375 3.375 0 0 0-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 0 0 2.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 0 0 2.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 0 0-2.456 2.456ZM16.894 20.567 16.5 21.75l-.394-1.183a2.25 2.25 0 0 0-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 0 0 1.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 0 0 1.423 1.423l1.183.394-1.183.394a2.25 2.25 0 0 0-1.423 1.423Z"
             />
           </svg>
-          <span
-            style={{
-              fontSize: "12px",
-              letterSpacing: "2px",
-            }}
-            className="ml-4"
-          >
-            |
-          </span>
+          <span className="ml-4 mini-header-typography">|</span>
         </li>
         <li className="flex items-center">
-          <Typography style={{ fontSize: "12px", letterSpacing: "2px" }}>
-            Events
-          </Typography>
+          <Typography className="mini-header-typography">Events</Typography>
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
             viewBox="0 0 24 24"
             strokeWidth="1.5"
             stroke="currentColor"
-            className="h-4 w-4 ml-2"
+            className="mini-header-svg"
           >
             <path
               strokeLinecap="round"
@@ -87,27 +64,17 @@ export default function MiniHeader() {
               d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5m-9-6h.008v.008H12v-.008ZM12 15h.008v.008H12V15Zm0 2.25h.008v.008H12v-.008ZM9.75 15h.008v.008H9.75V15Zm0 2.25h.008v.008H9.75v-.008ZM7.5 15h.008v.008H7.5V15Zm0 2.25h.008v.008H7.5v-.008Zm6.75-4.5h.008v.008h-.008v-.008Zm0 2.25h.008v.008h-.008V15Zm0 2.25h.008v.008h-.008v-.008Zm2.25-4.5h.008v.008H16.5v-.008Zm0 2.25h.008v.008H16.5V15Z"
             />
           </svg>
-          <span
-            style={{
-              fontSize: "12px",
-              letterSpacing: "2px",
-            }}
-            className="ml-4"
-          >
-            |
-          </span>
+          <span className="ml-4 mini-header-typography">|</span>
         </li>
         <li className="flex items-center">
-          <Typography style={{ fontSize: "12px", letterSpacing: "2px" }}>
-            Our Blog
-          </Typography>
+          <Typography className="mini-header-typography">Our Blog</Typography>
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
             viewBox="0 0 24 24"
             strokeWidth="1.5"
             stroke="currentColor"
-            className="h-4 w-4 ml-2"
+            className="mini-header-svg"
           >
             <path
               strokeLinecap="round"

@@ -104,7 +104,7 @@ function NavListMenu() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false);
   const renderItems = navListMenuItems.map(
     ({ icon, title, description }, key) => (
-      <a href="#" key={key}>
+      <a key={key}>
         <MenuItem className="flex items-center gap-3 rounded-lg">
           <div className="flex items-center justify-center rounded-lg !bg-blue-gray-50 p-2 ">
             {" "}
@@ -181,26 +181,14 @@ function NavListMenu() {
 function NavList() {
   return (
     <List className="mt-4 mb-6 p-0 lg:mt-0 lg:mb-0 lg:flex-row lg:p-1">
-      <Typography
-        as="a"
-        href="#"
-        variant="small"
-        color="white"
-        className="font-medium"
-      >
+      <Typography variant="small" color="white" className="font-medium">
         <Link to="/">
           <ListItem className="flex items-center gap-2 py-2 pr-4">
             Home
           </ListItem>
         </Link>
       </Typography>
-      <Typography
-        as="a"
-        href="#"
-        variant="small"
-        color="white"
-        className="font-medium"
-      >
+      <Typography variant="small" color="white" className="font-medium">
         <Link to="/about">
           <ListItem className="flex items-center gap-2 py-2 pr-4">
             About
@@ -208,13 +196,7 @@ function NavList() {
         </Link>
       </Typography>
       <NavListMenu />
-      <Typography
-        as="a"
-        href="#"
-        variant="small"
-        color="white"
-        className="font-medium"
-      >
+      <Typography variant="small" color="white" className="font-medium">
         <ListItem className="flex items-center gap-2 py-2 pr-4">
           Contact Us
         </ListItem>
@@ -405,9 +387,25 @@ export function NavigationBar() {
             alt="Logo"
             style={{ width: "150px", height: "auto" }}
           />
+
+          {/* Desktop navigation */}
           <div className="hidden lg:block">
             <NavList />
           </div>
+
+          {/* Hamburger icon for mobile */}
+          <IconButton
+            className="lg:hidden"
+            onClick={() => setOpenNav(!openNav)}
+          >
+            {openNav ? (
+              <XMarkIcon className="h-6 w-6" strokeWidth={2} />
+            ) : (
+              <Bars3Icon className="h-6 w-6" strokeWidth={2} />
+            )}
+          </IconButton>
+
+          {/* User profile or login/signup buttons */}
           {currentUser ? (
             <Link to="/profile">
               <Avatar
@@ -438,46 +436,49 @@ export function NavigationBar() {
           )}
         </div>
 
+        {/* Mobile navigation menu */}
         <Collapse open={openNav}>
-          <NavList />
+          <div>
+            <NavList />
 
-          {currentUser ? (
-            ""
-          ) : (
-            <div>
-              <IconButton
-                variant="text"
-                color="blue-gray"
-                className="lg:hidden"
-                onClick={() => setOpenNav(!openNav)}
-              >
-                {openNav ? (
-                  <XMarkIcon className="h-6 w-6" strokeWidth={2} />
-                ) : (
-                  <Bars3Icon className="h-6 w-6" strokeWidth={2} />
-                )}
-              </IconButton>
-              <div className="flex w-full flex-nowrap items-center gap-2 lg:hidden">
-                <Button
-                  variant="outlined"
-                  size="sm"
+            {/* Mobile login/signup buttons */}
+            {!currentUser && (
+              <div>
+                <IconButton
+                  variant="text"
                   color="blue-gray"
-                  fullWidth
-                  onClick={handleOpenLogIn}
+                  className="lg:hidden"
+                  onClick={() => setOpenNav(!openNav)}
                 >
-                  Log In
-                </Button>
-                <Button
-                  size="sm"
-                  style={{ backgroundColor: "white", color: "black" }}
-                  onClick={handleOpenSignUp}
-                >
-                  Sign In
-                </Button>
+                  {openNav ? (
+                    <XMarkIcon className="h-6 w-6" strokeWidth={2} />
+                  ) : (
+                    <Bars3Icon className="h-6 w-6" strokeWidth={2} />
+                  )}
+                </IconButton>
+                <div className="flex w-full flex-nowrap items-center gap-2 lg:hidden">
+                  <Button
+                    variant="outlined"
+                    size="sm"
+                    color="blue-gray"
+                    fullWidth
+                    onClick={handleOpenLogIn}
+                  >
+                    Log In
+                  </Button>
+                  <Button
+                    size="sm"
+                    style={{ backgroundColor: "white", color: "black" }}
+                    onClick={handleOpenSignUp}
+                  >
+                    Sign Up
+                  </Button>
+                </div>
               </div>
-            </div>
-          )}
+            )}
+          </div>
         </Collapse>
+
         {/* To handle Login Button */}
         <Dialog
           size="xs"
@@ -511,7 +512,6 @@ export function NavigationBar() {
                   onKeyPress={handleKeyPress}
                   required
                   onChange={handleChangeSignIn}
-                  size="lg"
                 />
                 <Typography className="-mb-2" variant="h6">
                   Your Password
@@ -521,11 +521,8 @@ export function NavigationBar() {
                   label="password"
                   type="password"
                   onChange={handleChangeSignIn}
-                  size="lg"
                 />
-                <div className="-ml-2.5 -mt-3">
-                  <Checkbox label="Remember Me" />
-                </div>
+
                 {error && (
                   <Alert
                     icon={<Icon />}
@@ -571,7 +568,7 @@ export function NavigationBar() {
           size="xs"
           open={openSignUp}
           handler={handleOpenSignUp}
-          className="bg-transparent shadow-none"
+          className="bg-transparent shadow-none overflow-scroll"
         >
           <Card className="mx-auto w-full">
             <form onSubmit={handleSignUpSubmit}>
@@ -598,7 +595,6 @@ export function NavigationBar() {
                     <Input
                       label="Name"
                       id="name"
-                      size="sm"
                       onKeyPress={handleKeyPressName}
                       onChange={handleChangeSignUp}
                     />
@@ -609,7 +605,6 @@ export function NavigationBar() {
                     </Typography>
                     <Input
                       label="User Name"
-                      size="sm"
                       id="username"
                       onKeyPress={handleKeyPressName}
                       onChange={handleChangeSignUp}
@@ -622,7 +617,6 @@ export function NavigationBar() {
                     <Input
                       type="email"
                       label="Email"
-                      size="sm"
                       id="email"
                       onKeyPress={handleKeyPress}
                       onChange={handleChangeSignUp}
@@ -635,7 +629,6 @@ export function NavigationBar() {
                     <Input
                       type="text"
                       label="Age"
-                      size="sm"
                       id="age"
                       onKeyPress={handleKeyPressName}
                       onChange={handleChangeSignUp}
@@ -648,7 +641,6 @@ export function NavigationBar() {
                     <Input
                       type="password"
                       label="Password"
-                      size="sm"
                       id="password"
                       onChange={handleChangeSignUp}
                     />
@@ -660,7 +652,6 @@ export function NavigationBar() {
                     <Input
                       type="password"
                       label="Password"
-                      size="sm"
                       id="repassword"
                       onChange={handleChangeSignUp}
                     />
