@@ -1,5 +1,11 @@
 import React from "react";
-import { Card, Typography, List, ListItem } from "@material-tailwind/react";
+import {
+  Card,
+  Typography,
+  List,
+  ListItem,
+  IconButton,
+} from "@material-tailwind/react";
 import { CardSlider } from "../components/home/CardSlider";
 import ProductCardContainer from "../components/home/ProductCardContainer";
 

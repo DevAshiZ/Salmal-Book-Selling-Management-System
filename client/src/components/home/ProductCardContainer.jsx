@@ -10,7 +10,7 @@ import {
 
 export default function ProductCardContainer({ cards, content }) {
   return (
-    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-5 mt-5 mx-10">
+    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-5 mt-5 mx-10 mb-5">
       {content === "best-sellers" ? (
         cards.map((card, index) => (
           <Card
@@ -104,35 +104,34 @@ export default function ProductCardContainer({ cards, content }) {
         ))
       ) : content === "stationary" ? (
         cards.map((card, index) => (
-          <Card className="w-full sm:w-56 h-56 sm:h-auto">
-            <CardHeader shadow={false} floated={false} className="h-44 sm:h-44">
+          <Card className="w-full sm:w-56 h-48 sm:h-auto flex flex-col justify-between">
+            <CardHeader shadow={false} floated={false} className="h-32 sm:h-44">
               <img
                 src={card.img}
                 alt="card-image"
                 className="h-full w-full object-cover"
               />
             </CardHeader>
-            <CardBody>
-              <div className="mb-2">
+            <CardBody className="flex-1 flex flex-col justify-between p-2 sm:p-4">
+              <div className="mb-1 sm:mb-2 text-center sm:text-left">
                 <Typography
                   color="blue-gray"
                   variant="h6"
-                  className="text-center sm:text-left text-sm md:text-base"
+                  className="text-xs sm:text-base"
                 >
                   {card.title}
                 </Typography>
                 <Typography
                   color="green"
-                  className="font-semibold text-center sm:text-left text-xs md:text-sm"
+                  className="font-semibold text-xs sm:text-sm"
                 >
                   {card.price}
                 </Typography>
               </div>
               <Button
                 ripple={false}
-                size=""
                 fullWidth={true}
-                className="bg-blue-gray-900/10 text-blue-gray-900 shadow-none hover:scale-105 hover:shadow-none focus:scale-105 focus:shadow-none active:scale-100 text-xs md:text-sm"
+                className="mt-2 bg-gray-900 text-white shadow-none hover:scale-105 hover:shadow-none focus:scale-105 focus:shadow-none active:scale-100 text-xs sm:text-sm"
               >
                 Add to Cart
               </Button>

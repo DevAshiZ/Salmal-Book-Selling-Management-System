@@ -15,9 +15,9 @@ export default function About() {
     <div style={{ overflowY: "auto" }}>
       <Typography
         variant="h4"
-        className="text-center pt-3  font-bold"
+        className="text-center pt-3  font-bold "
         style={{
-          backgroundColor: "#393646",
+          backgroundColor: "#4F4557",
           color: "#EEEEEE",
 
           marginBottom: "0",
@@ -29,7 +29,7 @@ export default function About() {
       <Typography
         className="text-center pb-2 "
         style={{
-          backgroundColor: "#393646",
+          backgroundColor: "#4F4557",
           // fontFamily: "Nunito, sans-serif",
           fontSize: "0.875rem",
           color: "#EEEEEE",

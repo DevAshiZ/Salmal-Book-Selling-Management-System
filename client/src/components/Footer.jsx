@@ -44,8 +44,7 @@ export function Footer() {
                 <div key={key} className="w-full">
                   <Typography
                     variant="small"
-                    color="blue-gray"
-                    className="mb-4 font-bold uppercase opacity-50"
+                    className="mb-4 font-bold uppercase opacity-90 text-gray-900"
                   >
                     {title}
                   </Typography>
@@ -76,7 +75,7 @@ export function Footer() {
             variant="small"
             className="mb-4 text-center font-normal text-blue-gray-900 md:mb-0"
           >
-            &copy; {currentYear} Created By Ashan Tharindu & Chanmi Linara
+            &copy; {currentYear} Created By Ashan Tharindu
           </Typography>
           <div className="flex gap-4 text-blue-gray-900 sm:justify-center">
             <Typography

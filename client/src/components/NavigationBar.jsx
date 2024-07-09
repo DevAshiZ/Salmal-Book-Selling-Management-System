@@ -1,8 +1,10 @@
 import React, { useState } from "react";
 import logoImg from "../images/logo.svg";
 import logoBnW from "../images/logoBnW.svg";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCartShopping, faHeart } from "@fortawesome/free-solid-svg-icons";
 import {
   signInStart,
   signInSuccess,
@@ -31,6 +33,7 @@ import {
   Alert,
   Avatar,
   Checkbox,
+  Badge,
 } from "@material-tailwind/react";
 import {
   ChevronDownIcon,
@@ -50,6 +53,7 @@ import {
 } from "@heroicons/react/24/solid";
 import OAuth from "./OAuth";
 import MiniHeader from "./accessories/MiniHeader";
+import { MiniNavBar } from "./accessories/MiniNavBar";
 
 const navListMenuItems = [
   {
@@ -185,6 +189,20 @@ function NavList() {
         <Link to="/">
           <ListItem className="flex items-center gap-2 py-2 pr-4">
             Home
+          </ListItem>
+        </Link>
+      </Typography>
+      <Typography variant="small" color="white" className="font-medium">
+        <Link to="/about">
+          <ListItem className="flex items-center gap-2 py-2 pr-4">
+            Offers
+          </ListItem>
+        </Link>
+      </Typography>
+      <Typography variant="small" color="white" className="font-medium">
+        <Link to="/about">
+          <ListItem className="flex items-center gap-2 py-2 pr-4">
+            E books
           </ListItem>
         </Link>
       </Typography>
@@ -374,66 +392,140 @@ export function NavigationBar() {
     }
   }, [SignUpError, error, dispatch]);
 
+  const location = useLocation();
+  const isHomePage = location.pathname === "/";
+
   return (
     <div>
       <MiniHeader />
+      {isHomePage && <MiniNavBar />}
+
       <header
-        className="mx-auto max-w-screen px-4 py-2 "
+        className="mx-auto max-w-screen px-4 py-2  "
         style={{ backgroundColor: "#191919" }}
       >
-        <div className="flex items-center justify-between text-blue-gray-900">
-          <img
-            src={logoImg}
-            alt="Logo"
-            style={{ width: "150px", height: "auto" }}
-          />
+        <div className="flex items-center justify-between text-blue-gray-900 sticky px-4">
+          {/* Left side for spacing */}
+          <div className="flex-1"></div>
 
           {/* Desktop navigation */}
-          <div className="hidden lg:block">
-            <NavList />
+          <div
+            className="hidden lg:block flex-1"
+            style={{ marginLeft: "-425px" }}
+          >
+            <NavList className="flex justify-center" />
+          </div>
+
+          <div className="block lg:hidden flex-1">
+            <img
+              src={logoImg}
+              alt="Mobile View"
+              className="h-auto"
+              style={{ width: "300px" }}
+            />
           </div>
 
           {/* Hamburger icon for mobile */}
-          <IconButton
-            className="lg:hidden"
-            onClick={() => setOpenNav(!openNav)}
-          >
-            {openNav ? (
-              <XMarkIcon className="h-6 w-6" strokeWidth={2} />
-            ) : (
-              <Bars3Icon className="h-6 w-6" strokeWidth={2} />
-            )}
-          </IconButton>
+          <div className="flex lg:hidden flex-1 justify-end mr-4">
+            <IconButton onClick={() => setOpenNav(!openNav)}>
+              {openNav ? (
+                <XMarkIcon className="h-6 w-6" strokeWidth={2} />
+              ) : (
+                <Bars3Icon className="h-6 w-6" strokeWidth={2} />
+              )}
+            </IconButton>
+          </div>
 
           {/* User profile or login/signup buttons */}
-          {currentUser ? (
-            <Link to="/profile">
-              <Avatar
-                src={currentUser.profilePicture}
-                alt="profile"
-                className="mr-5"
-              />
-            </Link>
-          ) : (
-            <div className="hidden gap-2 lg:flex">
-              <Button
-                variant="text"
-                size="sm"
-                color="white"
-                onClick={handleOpenLogIn}
-              >
-                Log In
-              </Button>
-              <Button
-                variant="gradient"
-                size="sm"
-                color="white"
-                onClick={handleOpenSignUp}
-              >
-                Sign Up
-              </Button>
-            </div>
-          )}
+          <div className="flex items-center gap-2">
+            {currentUser ? (
+              <div className="flex ">
+                <div className="rounded-full mr-2 mt-1">
+                  <Badge
+                    content="0"
+                    overlap="circular"
+                    placement="top-end"
+                    className="hidden"
+                  >
+                    <IconButton
+                      size="sm"
+                      variant="outlined"
+                      color="white"
+                      className="rounded-full "
+                    >
+                      <FontAwesomeIcon icon={faHeart} color="white" size="lg" />
+                    </IconButton>
+                  </Badge>
+                </div>
+
+                <div className="mr-5 mt-1">
+                  <Badge
+                    content="0"
+                    overlap="circular"
+                    placement="top-end"
+                    className="hidden"
+                  >
+                    <IconButton
+                      size="sm"
+                      variant="outlined"
+                      color="white"
+                      className="rounded-full "
+                    >
+                      <FontAwesomeIcon
+                        icon={faCartShopping}
+                        color="white"
+                        size="lg"
+                      />
+                    </IconButton>
+                  </Badge>
+                </div>
+
+                <Link to="/profile">
+                  <div className="flex ">
+                    <Avatar
+                      src={currentUser.profilePicture}
+                      alt="profile"
+                      className="mr-2"
+                      size="sm"
+                    />
+                    <div className="flex-col">
+                      <span
+                        className="text-white text-xs "
+                        style={{ lineHeight: "1" }}
+                      >
+                        Hello,
+                      </span>
+                      <Typography
+                        className="text-white text-sm font-semibold"
+                        style={{ lineHeight: "0.5" }}
+                      >
+                        {currentUser.name.split(" ")[0]}
+                      </Typography>
+                    </div>
+                  </div>
+                </Link>
+              </div>
+            ) : (
+              <div className="hidden lg:flex gap-2">
+                <Button
+                  variant="text"
+                  size="sm"
+                  color="white"
+                  onClick={handleOpenLogIn}
+                >
+                  Log In
+                </Button>
+                <Button
+                  variant="gradient"
+                  size="sm"
+                  color="white"
+                  onClick={handleOpenSignUp}
+                >
+                  Sign Up
+                </Button>
+              </div>
+            )}
+          </div>
         </div>
 
         {/* Mobile navigation menu */}
