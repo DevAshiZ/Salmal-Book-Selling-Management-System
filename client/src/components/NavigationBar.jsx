@@ -4,35 +4,42 @@ import logoBnW from "../images/logoBnW.svg";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCartShopping, faHeart } from "@fortawesome/free-solid-svg-icons";
+import {
+  faCartShopping,
+  faHeart,
+  faSearch,
+} from "@fortawesome/free-solid-svg-icons";
 import {
   signInStart,
   signInSuccess,
   signInFailure,
   setErrorFalse,
+  signOut,
 } from "../redux/user/userSlice";
 import { useDispatch, useSelector } from "react-redux";
 
 import {
+  Popover,
+  PopoverHandler,
+  PopoverContent,
+  List,
+  ListItem,
+  ListItemPrefix,
   Collapse,
   Typography,
   Button,
   IconButton,
-  List,
-  ListItem,
   Menu,
   MenuHandler,
   MenuList,
   MenuItem,
   Dialog,
   Card,
-  CardHeader,
   CardBody,
   CardFooter,
   Input,
   Alert,
   Avatar,
-  Checkbox,
   Badge,
 } from "@material-tailwind/react";
 import {
@@ -53,7 +60,6 @@ import {
 } from "@heroicons/react/24/solid";
 import OAuth from "./OAuth";
 import MiniHeader from "./accessories/MiniHeader";
-import { MiniNavBar } from "./accessories/MiniNavBar";
 
 const navListMenuItems = [
   {
@@ -109,25 +115,25 @@ function NavListMenu() {
   const renderItems = navListMenuItems.map(
     ({ icon, title, description }, key) => (
       <a key={key}>
-        <MenuItem className="flex items-center gap-3 rounded-lg">
-          <div className="flex items-center justify-center rounded-lg !bg-blue-gray-50 p-2 ">
+        <MenuItem className="flex items-center gap-3 rounded-lg hover:bg-gray-800 hover:text-gray-300  ">
+          <div className="flex items-center justify-center rounded-lg bg-gray-800 p-2 ">
             {" "}
             {React.createElement(icon, {
               strokeWidth: 2,
-              className: "h-6 text-gray-900 w-6",
+              className: "h-6 text-white  w-6",
             })}
           </div>
           <div>
             <Typography
               variant="h6"
-              color="blue-gray"
-              className="flex items-center text-sm font-bold"
+              color="white"
+              className="flex items-center text-sm font-bold opacity-80"
             >
               {title}
             </Typography>
             <Typography
               variant="paragraph"
-              className="text-xs !font-medium text-blue-gray-500"
+              className="text-xs !font-medium text-white opacity-65"
             >
               {description}
             </Typography>
@@ -142,14 +148,14 @@ function NavListMenu() {
       <Menu
         open={isMenuOpen}
         handler={setIsMenuOpen}
-        offset={{ mainAxis: 20 }}
+        offset={{ mainAxis: 13 }}
         placement="bottom"
         allowHover={true}
       >
         <MenuHandler>
-          <Typography as="div" variant="small" className="font-medium">
+          <Typography as="div" variant="small" className="font-medium ">
             <ListItem
-              className="flex items-center gap-2 py-2 pr-4 font-medium text-white"
+              className="flex items-center gap-2 py-2 pr-4 font-medium text-white hover:bg-gray-800 hover:text-gray-300"
               selected={isMenuOpen || isMobileMenuOpen}
               onClick={() => setIsMobileMenuOpen((cur) => !cur)}
             >
@@ -169,7 +175,7 @@ function NavListMenu() {
             </ListItem>
           </Typography>
         </MenuHandler>
-        <MenuList className="hidden max-w-screen-xl rounded-xl lg:block">
+        <MenuList className="hidden max-w-screen-xl border-none lg:block rounded-none bg-gray-900 ">
           <ul className="grid grid-cols-3 gap-y-2 outline-none outline-0">
             {renderItems}
           </ul>
@@ -187,35 +193,35 @@ function NavList() {
     <List className="mt-4 mb-6 p-0 lg:mt-0 lg:mb-0 lg:flex-row lg:p-1">
       <Typography variant="small" color="white" className="font-medium">
         <Link to="/">
-          <ListItem className="flex items-center gap-2 py-2 pr-4">
+          <ListItem className="flex items-center gap-2 py-2 pr-4 hover:bg-gray-800 hover:text-gray-300">
             Home
           </ListItem>
         </Link>
       </Typography>
       <Typography variant="small" color="white" className="font-medium">
         <Link to="/about">
-          <ListItem className="flex items-center gap-2 py-2 pr-4">
+          <ListItem className="flex items-center gap-2 py-2 pr-4 hover:bg-gray-800 hover:text-gray-300">
             Offers
           </ListItem>
         </Link>
       </Typography>
       <Typography variant="small" color="white" className="font-medium">
         <Link to="/about">
-          <ListItem className="flex items-center gap-2 py-2 pr-4">
+          <ListItem className="flex items-center gap-2 py-2 pr-4 hover:bg-gray-800 hover:text-gray-300">
             E books
           </ListItem>
         </Link>
       </Typography>
       <Typography variant="small" color="white" className="font-medium">
         <Link to="/about">
-          <ListItem className="flex items-center gap-2 py-2 pr-4">
+          <ListItem className="flex items-center gap-2 py-2 pr-4 hover:bg-gray-800 hover:text-gray-300">
             About
           </ListItem>
         </Link>
       </Typography>
       <NavListMenu />
       <Typography variant="small" color="white" className="font-medium">
-        <ListItem className="flex items-center gap-2 py-2 pr-4">
+        <ListItem className="flex items-center gap-2 py-2 pr-4 hover:bg-gray-800 hover:text-gray-300">
           Contact Us
         </ListItem>
       </Typography>
@@ -395,10 +401,18 @@ export function NavigationBar() {
   const location = useLocation();
   const isHomePage = location.pathname === "/";
 
+  const handleSignOut = async () => {
+    try {
+      await fetch("/api/auth/signout");
+      dispatch(signOut());
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <div>
       <MiniHeader />
-      {isHomePage && <MiniNavBar />}
 
       <header
         className="mx-auto max-w-screen px-4 py-2  "
@@ -406,7 +420,18 @@ export function NavigationBar() {
       >
         <div className="flex items-center justify-between text-blue-gray-900 sticky px-4">
           {/* Left side for spacing */}
-          <div className="flex-1"></div>
+          <div className="flex-1">
+            <Link to="/">
+              {" "}
+              <div className="hidden lg:block">
+                <img
+                  src={logoImg}
+                  alt="Logo"
+                  style={{ width: "100px", height: "auto" }}
+                />
+              </div>
+            </Link>
+          </div>
 
           {/* Desktop navigation */}
           <div
@@ -414,6 +439,26 @@ export function NavigationBar() {
             style={{ marginLeft: "-425px" }}
           >
             <NavList className="flex justify-center" />
+          </div>
+
+          <div className="inline-flex relative w-full gap-2 md:w-max mr-5">
+            <Input
+              type="search"
+              placeholder="Search"
+              containerProps={{
+                className: "min-w-[288px]",
+              }}
+              className=" !border-t-blue-gray-300 pl-9 placeholder:text-blue-gray-300 focus:!border-blue-gray-300"
+              labelProps={{
+                className: "before:content-none after:content-none",
+              }}
+            />
+
+            {/*Icon Search*/}
+
+            <div className="!absolute left-3 top-[10px]">
+              <FontAwesomeIcon icon={faSearch} color="white" size="sm" />
+            </div>
           </div>
 
           <div className="block lg:hidden flex-1">
@@ -479,31 +524,156 @@ export function NavigationBar() {
                     </IconButton>
                   </Badge>
                 </div>
-
-                <Link to="/profile">
-                  <div className="flex ">
-                    <Avatar
-                      src={currentUser.profilePicture}
-                      alt="profile"
-                      className="mr-2"
-                      size="sm"
-                    />
-                    <div className="flex-col">
-                      <span
-                        className="text-white text-xs "
-                        style={{ lineHeight: "1" }}
-                      >
-                        Hello,
-                      </span>
-                      <Typography
-                        className="text-white text-sm font-semibold"
-                        style={{ lineHeight: "0.5" }}
-                      >
-                        {currentUser.name.split(" ")[0]}
-                      </Typography>
+                <Popover placement="bottom-end">
+                  <PopoverHandler>
+                    <div className="flex ">
+                      <Avatar
+                        src={currentUser.profilePicture}
+                        alt="profile"
+                        className="mr-2"
+                        size="sm"
+                      />
+                      <div className="flex-col">
+                        <span
+                          className="text-white text-xs "
+                          style={{ lineHeight: "1" }}
+                        >
+                          Hello,
+                        </span>
+                        <Typography
+                          className="text-white text-sm font-semibold"
+                          style={{ lineHeight: "0.5" }}
+                        >
+                          {currentUser.name.split(" ")[0]}
+                        </Typography>
+                      </div>
                     </div>
-                  </div>
-                </Link>
+                  </PopoverHandler>
+                  <PopoverContent className="w-72 bg-gray-900 rounded-none border-none ml-5">
+                    <div className="mb-4 flex items-center gap-4 border-b border-gray-800 pb-4">
+                      <Avatar
+                        src={currentUser.profilePicture}
+                        alt="profile-img"
+                      />
+                      <div>
+                        <Typography
+                          variant="h6"
+                          color="white"
+                          className="opacity-90"
+                          style={{ lineHeight: "1" }}
+                        >
+                          {currentUser.name}
+                        </Typography>
+                        <Typography
+                          variant="small"
+                          color="gray"
+                          className="font-medium text-white opacity-80"
+                        >
+                          {currentUser.userType}
+                        </Typography>
+                      </div>
+                    </div>
+                    <List className="p-0">
+                      {location.pathname !== "/admin-dashboard" && (
+                        <Link to="/admin-dashboard">
+                          <ListItem
+                            className="text-white opacity-80 hover:bg-gray-800 hover:text-gray-300"
+                            style={{ fontSize: "15px" }}
+                          >
+                            <ListItemPrefix>
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke-width="1.5"
+                                stroke="currentColor"
+                                class="size-5"
+                              >
+                                <path
+                                  stroke-linecap="round"
+                                  stroke-linejoin="round"
+                                  d="M20.25 14.15v4.25c0 1.094-.787 2.036-1.872 2.18-2.087.277-4.216.42-6.378.42s-4.291-.143-6.378-.42c-1.085-.144-1.872-1.086-1.872-2.18v-4.25m16.5 0a2.18 2.18 0 0 0 .75-1.661V8.706c0-1.081-.768-2.015-1.837-2.175a48.114 48.114 0 0 0-3.413-.387m4.5 8.006c-.194.165-.42.295-.673.38A23.978 23.978 0 0 1 12 15.75c-2.648 0-5.195-.429-7.577-1.22a2.016 2.016 0 0 1-.673-.38m0 0A2.18 2.18 0 0 1 3 12.489V8.706c0-1.081.768-2.015 1.837-2.175a48.111 48.111 0 0 1 3.413-.387m7.5 0V5.25A2.25 2.25 0 0 0 13.5 3h-3a2.25 2.25 0 0 0-2.25 2.25v.894m7.5 0a48.667 48.667 0 0 0-7.5 0M12 12.75h.008v.008H12v-.008Z"
+                                />
+                              </svg>
+                            </ListItemPrefix>
+                            DashBoard
+                          </ListItem>
+                        </Link>
+                      )}
+                      {location.pathname !== "/profile" && (
+                        <Link to="/profile">
+                          <ListItem
+                            className="text-white opacity-80 hover:bg-gray-800 hover:text-gray-300"
+                            style={{ fontSize: "15px" }}
+                          >
+                            <ListItemPrefix>
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke-width="1.5"
+                                stroke="currentColor"
+                                class="size-5"
+                              >
+                                <path
+                                  stroke-linecap="round"
+                                  stroke-linejoin="round"
+                                  d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
+                                />
+                              </svg>
+                            </ListItemPrefix>
+                            Profile
+                          </ListItem>
+                        </Link>
+                      )}
+
+                      <ListItem
+                        className="text-white opacity-80 hover:bg-gray-800 hover:text-gray-300"
+                        style={{ fontSize: "15px" }}
+                      >
+                        <ListItemPrefix>
+                          <svg
+                            width="16"
+                            height="16"
+                            viewBox="0 0 16 16"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path
+                              d="M0 1C0 0.734784 0.105357 0.48043 0.292893 0.292893C0.48043 0.105357 0.734784 0 1 0H3.153C3.38971 0.000108969 3.6187 0.0841807 3.79924 0.23726C3.97979 0.390339 4.10018 0.602499 4.139 0.836L4.879 5.271C4.91436 5.48222 4.88097 5.69921 4.78376 5.89003C4.68655 6.08085 4.53065 6.23543 4.339 6.331L2.791 7.104C3.34611 8.47965 4.17283 9.72928 5.22178 10.7782C6.27072 11.8272 7.52035 12.6539 8.896 13.209L9.67 11.661C9.76552 11.4695 9.91994 11.3138 10.1106 11.2166C10.3012 11.1194 10.5179 11.0859 10.729 11.121L15.164 11.861C15.3975 11.8998 15.6097 12.0202 15.7627 12.2008C15.9158 12.3813 15.9999 12.6103 16 12.847V15C16 15.2652 15.8946 15.5196 15.7071 15.7071C15.5196 15.8946 15.2652 16 15 16H13C5.82 16 0 10.18 0 3V1Z"
+                              fill="#90A4AE"
+                            />
+                          </svg>
+                        </ListItemPrefix>
+                        00 123 456 789
+                      </ListItem>
+
+                      <ListItem
+                        onClick={handleSignOut}
+                        className="text-white opacity-80 hover:bg-gray-800 hover:text-gray-300"
+                        style={{ fontSize: "15px" }}
+                      >
+                        <ListItemPrefix>
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke-width="1.5"
+                            stroke="currentColor"
+                            class="size-5"
+                          >
+                            <path
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                              d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15m3 0 3-3m0 0-3-3m3 3H9"
+                            />
+                          </svg>
+                        </ListItemPrefix>
+                        Sign Out
+                      </ListItem>
+                    </List>
+                  </PopoverContent>
+                </Popover>
               </div>
             ) : (
               <div className="hidden lg:flex gap-2">

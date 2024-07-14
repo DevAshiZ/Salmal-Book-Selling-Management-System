@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { SideBar } from "../components/SideBar";
 import { useRef } from "react";
 import {
   Card,
@@ -14,6 +13,8 @@ import {
   Avatar,
   Button,
   Alert,
+  IconButton,
+  Badge,
 } from "@material-tailwind/react";
 import { useSelector } from "react-redux";
 import {
@@ -34,7 +35,7 @@ import {
   deleteUserSuccess,
   signOut,
 } from "../redux/user/userSlice";
-import { Footer } from "../components/Footer";
+import { PencilSquareIcon } from "@heroicons/react/24/outline";
 
 function SuccessIcon() {
   return (
@@ -93,8 +94,7 @@ export default function Profile() {
       setShowAlert(true);
       const timer = setTimeout(() => {
         setShowAlert(false);
-      }, 5000);
-
+      }, 2000);
       return () => clearTimeout(timer);
     }
     if (image) {
@@ -149,7 +149,7 @@ export default function Profile() {
         dispatch(updateUserFailure(data));
         return;
       }
-      console.log("updated successfully: ", data);
+      console.log("updated successfully");
       dispatch(updateUserSuccess(data));
       setUpdateSuccess(true);
     } catch (error) {
@@ -188,227 +188,283 @@ export default function Profile() {
   //function to handle delete confirmation
   const handleOpenDelete = () => setOpenDelete(!openDelete);
 
-  return (
-    <div className="main-layout ">
-      <SideBar />
-      <div className="inner-layout flex justify-center h-full  ">
-        <div>
-          {showAlert && (
-            <Alert
-              icon={<SuccessIcon />}
-              className="rounded-none border-l-4 border-[#2ec946] bg-[#2ec946]/10 font-medium text-[#2ec946]"
-            >
-              Profile Updated Successfully.
-            </Alert>
-          )}
-          <Typography variant="h4" color="blue-gray" className="text-center">
-            My Profile
-          </Typography>
-          <Card className="items-center mt-5 pt-5 w-auto  overflow-auto">
-            <Avatar
-              size="xxl"
-              src={currentUser.profilePicture}
-              alt="profile-picture"
-            />
+  const UpdateBtn = (
+    <IconButton
+      variant="outlined"
+      className="rounded-full"
+      style={{
+        height: "24px",
+        width: "24px",
+        position: "relative",
+      }}
+      color="white"
+      size="sm"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 20 20"
+        fill="currentColor"
+        class="size-4"
+      >
+        <path
+          fill-rule="evenodd"
+          d="M3 4.25A2.25 2.25 0 0 1 5.25 2h5.5A2.25 2.25 0 0 1 13 4.25v2a.75.75 0 0 1-1.5 0v-2a.75.75 0 0 0-.75-.75h-5.5a.75.75 0 0 0-.75.75v11.5c0 .414.336.75.75.75h5.5a.75.75 0 0 0 .75-.75v-2a.75.75 0 0 1 1.5 0v2A2.25 2.25 0 0 1 10.75 18h-5.5A2.25 2.25 0 0 1 3 15.75V4.25Z"
+          clip-rule="evenodd"
+        />
+        <path
+          fill-rule="evenodd"
+          d="M6 10a.75.75 0 0 1 .75-.75h9.546l-1.048-.943a.75.75 0 1 1 1.004-1.114l2.5 2.25a.75.75 0 0 1 0 1.114l-2.5 2.25a.75.75 0 1 1-1.004-1.114l1.048-.943H6.75A.75.75 0 0 1 6 10Z"
+          clip-rule="evenodd"
+        />
+      </svg>
+    </IconButton>
+  );
 
-            <CardBody className="text-center">
-              <Typography variant="h4" color="blue-gray">
-                {currentUser.name}
-              </Typography>
+  return (
+    <div>
+      {showAlert && (
+        <Alert
+          icon={<SuccessIcon />}
+          className="rounded-none border-l-4 border-[#2ec946] bg-[#2ec946]/10 font-medium text-[#2ec946] h-4 items-center text-sm"
+        >
+          Profile Updated Successfully.
+        </Alert>
+      )}
+      <div className="flex justify-between" style={{ background: "#393646" }}>
+        <div className="inline-flex items-center   py-2 bg-opacity-50 bg-black rounded-lg  m-2 px-5 ">
+          <div className="cursor-pointer " onClick={handleOpen}>
+            <Badge
+              content={
+                <PencilSquareIcon
+                  className="h-4 w-4 text-white"
+                  strokeWidth={2.5}
+                />
+              }
+              overlap="circular"
+              placement="bottom-end"
+              className=" bg-gray-900  border-2 border-white shadow-lg shadow-black/20"
+            >
+              <Avatar size="lg" src={currentUser.profilePicture} />
+            </Badge>
+          </div>
+
+          <div className="ml-5">
+            <Typography variant="h5" className="text-white opacity-80">
+              {currentUser.name}
+            </Typography>
+            <Typography
+              className="text-white opacity-75 mt-1 text-xs text-end"
+              style={{ lineHeight: "1.5px" }}
+            >
+              @{currentUser.username}
+            </Typography>
+            <div className="flex items-center justify-end gap-1">
               <Typography
-                color="blue-gray"
-                className="font-semibold text-sm"
-                textGradient
+                className={`text-white opacity-75 mt-2 w-16 block text-xs items-end text-center ${
+                  currentUser.userType === "Customer"
+                    ? "bg-green-900"
+                    : currentUser.userType === "Manager"
+                    ? "bg-red-900"
+                    : "bg-gray-900"
+                } `}
               >
-                @{currentUser.username}
+                {currentUser.userType}
               </Typography>
-              <div className="text-left">
-                <Typography variant="h6" color="blue-gray" className="mt-2">
-                  Email:{" "}
-                  <span className="font-normal ">{currentUser.email}</span>
-                </Typography>
-                <Typography variant="h6" color="blue-gray">
-                  Age: <span className="font-normal ">{currentUser.age}</span>
-                </Typography>
-                <Typography variant="h6" color="blue-gray">
-                  Contact Number:{" "}
-                  <span className="font-normal ">
-                    {currentUser.phone_number}
-                  </span>
-                </Typography>
-                <Typography variant="h6" color="blue-gray">
-                  Address:{" "}
-                  <span className="font-normal ">{currentUser.address}</span>
-                </Typography>
-              </div>
-              <Button fullWidth className="mt-3" onClick={handleOpen}>
-                Update Profile
-              </Button>
-            </CardBody>
-          </Card>
-          <div className="mt-3 inline-flex gap-32">
-            <Button color="red" onClick={handleOpenDelete}>
+            </div>
+          </div>
+        </div>
+
+        <div className="inline-flex items-center  px-5 py-2 bg-opacity-50 bg-black rounded-lg m-2 ">
+          <div className="flex opacity-95 items-center">
+            <div>
+              <Typography color="white" className="text-xs">
+                Age
+              </Typography>
+              <Typography color="white" className="text-xs">
+                Phone Number
+              </Typography>
+              <Typography color="white" className="text-xs">
+                Email
+              </Typography>
+              <Typography color="white" className="text-xs">
+                Address
+              </Typography>
+            </div>
+            <div className="flex-col ml-5 opacity-95">
+              <Typography color="white" className="text-xs ">
+                : {currentUser.age}
+              </Typography>
+              <Typography color="white" className="text-xs">
+                : {currentUser.phone_number}
+              </Typography>
+              <Typography color="white" className="text-xs">
+                : {currentUser.email}
+              </Typography>
+              <Typography color="white" className="text-xs">
+                : {currentUser.address}
+              </Typography>
+            </div>
+            <Button
+              className="h-10 w-auto ml-16"
+              size="sm"
+              color="red"
+              onClick={handleOpenDelete}
+            >
               Delete Account
             </Button>
-            <Button onClick={handleSignOut} color="green">
-              Sign Out
-            </Button>
-
-            <Dialog
-              size="xs"
-              open={open}
-              handler={handleOpen}
-              className="bg-transparent shadow-none"
-            >
-              <Card className="mx-auto w-full">
-                <form onSubmit={handleSubmit}>
-                  <CardBody className="flex flex-col gap-4">
-                    <Typography
-                      variant="h4"
-                      color="blue-gray"
-                      className="text-center"
-                    >
-                      Update Profile
-                    </Typography>
-
-                    <input
-                      type="file"
-                      ref={fileRef}
-                      hidden
-                      accept="image/*"
-                      onChange={(e) => setImage(e.target.files[0])}
-                    />
-                    <div className="flex justify-center">
-                      <Avatar
-                        size="xxl"
-                        onClick={() => fileRef.current.click()}
-                        src={
-                          formData.profilePicture || currentUser.profilePicture
-                        }
-                        alt="profile-picture"
-                      />
-                    </div>
-                    <Typography className="text-sm self-center">
-                      {imageError ? (
-                        <span className="text-red-700">
-                          Error Uploading Image(File size must be less than 2MB)
-                        </span>
-                      ) : imagePercent > 0 && imagePercent < 100 ? (
-                        <span className="text-gray-900">
-                          {`Uploading Image... ${imagePercent}%`}
-                        </span>
-                      ) : imagePercent === 100 ? (
-                        <span className="text-green-700">
-                          Image Uploaded Successfully.
-                        </span>
-                      ) : (
-                        ""
-                      )}
-                    </Typography>
-
-                    <div className="grid grid-cols-2 gap-4">
-                      <div>
-                        <Typography className="mb-2" variant="h6">
-                          Your Username
-                        </Typography>
-                        <Input
-                          id="username"
-                          label="username"
-                          size="sm"
-                          defaultValue={currentUser.username}
-                          onChange={handleChange}
-                        />
-                      </div>
-                      <div>
-                        <Typography className="mb-2" variant="h6">
-                          Your Email
-                        </Typography>
-                        <Input
-                          id="email"
-                          label="email"
-                          type="email"
-                          size="sm"
-                          defaultValue={currentUser.email}
-                          onChange={handleChange}
-                        />
-                      </div>
-                      <div>
-                        <Typography className="mb-2" variant="h6">
-                          Age
-                        </Typography>
-                        <Input
-                          id="age"
-                          label="age"
-                          type="number"
-                          size="sm"
-                          defaultValue={currentUser.age}
-                          onChange={handleChange}
-                        />
-                      </div>
-                      <div>
-                        <Typography className="mb-2" variant="h6">
-                          Phone Number
-                        </Typography>
-                        <Input
-                          id="phone_number"
-                          label="phone number"
-                          type="text"
-                          size="sm"
-                          defaultValue={currentUser.phone_number}
-                          onChange={handleChange}
-                        />
-                      </div>
-                      <div>
-                        <Typography className="mb-2" variant="h6">
-                          Address
-                        </Typography>
-                        <Input
-                          id="address"
-                          label="address"
-                          type="text"
-                          size="sm"
-                          defaultValue={currentUser.address}
-                          onChange={handleChange}
-                        />
-                      </div>
-                      <div>
-                        <Typography className="mb-2" variant="h6">
-                          Your Password
-                        </Typography>
-                        <Input
-                          type="password"
-                          id="password"
-                          label="password"
-                          size="sm"
-                          onChange={handleChange}
-                        />
-                      </div>
-                    </div>
-                  </CardBody>
-                  <CardFooter className="pt-0">
-                    <Button
-                      type="submit"
-                      variant="gradient"
-                      fullWidth
-                      disabled={loading}
-                    >
-                      {loading ? "Loading..." : "Update Profile"}
-                    </Button>
-                    {error && (
-                      <Alert
-                        icon={<ErrorIcon />}
-                        className="rounded-none border-l-4 border-[#c9402e] bg-[#c9402e]/10 font-medium text-[#c9402e] mt-2"
-                      >
-                        {error || "Error Updating User. Retry"}
-                      </Alert>
-                    )}
-                  </CardFooter>
-                </form>
-              </Card>
-            </Dialog>
           </div>
         </div>
       </div>
+      <Dialog
+        size="xs"
+        open={open}
+        handler={handleOpen}
+        className="bg-transparent shadow-none"
+      >
+        <Card className="mx-auto w-full">
+          <form onSubmit={handleSubmit}>
+            <CardBody className="flex flex-col gap-4">
+              <Typography
+                variant="h4"
+                color="blue-gray"
+                className="text-center"
+              >
+                Update Profile
+              </Typography>
+
+              <input
+                type="file"
+                ref={fileRef}
+                hidden
+                accept="image/*"
+                onChange={(e) => setImage(e.target.files[0])}
+              />
+              <div className="flex justify-center">
+                <Avatar
+                  size="xxl"
+                  onClick={() => fileRef.current.click()}
+                  src={formData.profilePicture || currentUser.profilePicture}
+                  alt="profile-picture"
+                />
+              </div>
+              <Typography className="text-sm self-center">
+                {imageError ? (
+                  <span className="text-red-700">
+                    Error Uploading Image(File size must be less than 2MB)
+                  </span>
+                ) : imagePercent > 0 && imagePercent < 100 ? (
+                  <span className="text-gray-900">
+                    {`Uploading Image... ${imagePercent}%`}
+                  </span>
+                ) : imagePercent === 100 ? (
+                  <span className="text-green-700">
+                    Image Uploaded Successfully.
+                  </span>
+                ) : (
+                  ""
+                )}
+              </Typography>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Typography className="mb-2" variant="h6">
+                    Your Username
+                  </Typography>
+                  <Input
+                    id="username"
+                    label="username"
+                    size="sm"
+                    defaultValue={currentUser.username}
+                    onChange={handleChange}
+                  />
+                </div>
+                <div>
+                  <Typography className="mb-2" variant="h6">
+                    Your Email
+                  </Typography>
+                  <Input
+                    id="email"
+                    label="email"
+                    type="email"
+                    size="sm"
+                    defaultValue={currentUser.email}
+                    onChange={handleChange}
+                  />
+                </div>
+                <div>
+                  <Typography className="mb-2" variant="h6">
+                    Age
+                  </Typography>
+                  <Input
+                    id="age"
+                    label="age"
+                    type="number"
+                    size="sm"
+                    defaultValue={currentUser.age}
+                    onChange={handleChange}
+                  />
+                </div>
+                <div>
+                  <Typography className="mb-2" variant="h6">
+                    Phone Number
+                  </Typography>
+                  <Input
+                    id="phone_number"
+                    label="phone number"
+                    type="text"
+                    size="sm"
+                    defaultValue={currentUser.phone_number}
+                    onChange={handleChange}
+                  />
+                </div>
+                <div>
+                  <Typography className="mb-2" variant="h6">
+                    Address
+                  </Typography>
+                  <Input
+                    id="address"
+                    label="address"
+                    type="text"
+                    size="sm"
+                    defaultValue={currentUser.address}
+                    onChange={handleChange}
+                  />
+                </div>
+                <div>
+                  <Typography className="mb-2" variant="h6">
+                    Your Password
+                  </Typography>
+                  <Input
+                    type="password"
+                    id="password"
+                    label="password"
+                    size="sm"
+                    onChange={handleChange}
+                  />
+                </div>
+              </div>
+            </CardBody>
+            <CardFooter className="pt-0">
+              <Button
+                type="submit"
+                variant="gradient"
+                fullWidth
+                disabled={loading}
+              >
+                {loading ? "Loading..." : "Update Profile"}
+              </Button>
+              {error && (
+                <Alert
+                  icon={<ErrorIcon />}
+                  className="rounded-none border-l-4 border-[#c9402e] bg-[#c9402e]/10 font-medium text-[#c9402e] mt-2"
+                >
+                  {error || "Error Updating User. Retry"}
+                </Alert>
+              )}
+            </CardFooter>
+          </form>
+        </Card>
+      </Dialog>
       <Dialog open={openDelete} handler={handleOpenDelete}>
         <DialogHeader>
           <Typography variant="h5" color="blue-gray">

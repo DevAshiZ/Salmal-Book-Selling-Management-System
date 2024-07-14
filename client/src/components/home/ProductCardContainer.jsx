@@ -5,7 +5,6 @@ import {
   Typography,
   CardHeader,
   CardBody,
-  CardFooter,
 } from "@material-tailwind/react";
 
 export default function ProductCardContainer({ cards, content }) {
@@ -117,13 +116,13 @@ export default function ProductCardContainer({ cards, content }) {
                 <Typography
                   color="blue-gray"
                   variant="h6"
-                  className="text-xs sm:text-base"
+                  className="text-xs sm:text-base text-center"
                 >
                   {card.title}
                 </Typography>
                 <Typography
                   color="green"
-                  className="font-semibold text-xs sm:text-sm"
+                  className="font-semibold text-xs sm:text-sm text-end"
                 >
                   {card.price}
                 </Typography>
@@ -131,6 +130,7 @@ export default function ProductCardContainer({ cards, content }) {
               <Button
                 ripple={false}
                 fullWidth={true}
+                size="sm"
                 className="mt-2 bg-gray-900 text-white shadow-none hover:scale-105 hover:shadow-none focus:scale-105 focus:shadow-none active:scale-100 text-xs sm:text-sm"
               >
                 Add to Cart
